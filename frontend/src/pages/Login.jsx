@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 import "../styles/Login.css";
 
@@ -31,7 +32,7 @@ function Login() {
               </button>
               <p>
                   Não tem uma conta?
-                  <a href="/register"> Cadastre-se</a>
+                  <Link to="/register"> Cadastre-se</Link>
               </p>
           </form>
       </main>
