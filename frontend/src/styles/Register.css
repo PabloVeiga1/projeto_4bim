@@ -11,9 +11,14 @@ body {
 }
 
 .register-container {
-    width: calc(100% - 32px);
+    width: 100%;
     max-width: 450px;
     padding: 40px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     margin: 40px auto;
 
     background-color: #ffffff;
