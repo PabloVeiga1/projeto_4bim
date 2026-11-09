@@ -1,0 +1,124 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 40px auto;
+
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.register-header h1 {
+    color: #1f2937;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.register-header p {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.register-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.register-group label {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.register-group input {
+    width: 100%;
+    padding: 12px 14px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+
+    font-size: 15px;
+    outline: none;
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.register-group input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.register-form button {
+    width: 100%;
+    padding: 13px;
+
+    background-color: #2563eb;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 6px;
+
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: background-color 0.2s;
+}
+
+.register-form button:hover {
+    background-color: #1d4ed8;
+}
+
+.register-footer {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.register-footer a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        padding: 30px 24px;
+        margin: 20px auto;
+    }
+}
