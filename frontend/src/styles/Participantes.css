@@ -1,0 +1,195 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: white;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    gap: 15px;
+}
+
+header > div {
+    min-width: 0;
+}
+
+header > h1,
+header > div > h1 {
+    color: rgb(29, 29, 29);
+    font-size: 1.8rem;
+}
+
+header > div > p {
+    font-size: 1rem;
+    color: #333;
+}
+
+header > button {
+    background-color: #b88e33;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 5px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background-color 0.2s;
+}
+
+header > button:hover {
+    cursor: pointer;
+    background-color: #685a23;
+}
+
+.campo_pesquisa {
+    margin-top: 2%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 2.7%;
+}
+
+.campo_pesquisa > input {
+    width: 60%;
+    height: 35px;
+    border: 1px solid rgb(211, 211, 211);
+    padding: 10px;
+    border-radius: 2px;
+}
+
+.campo_pesquisa > button {
+    width: 100px;
+    min-height: 35px;
+    border: none;
+    background-color: rgb(45, 176, 45);
+    color: white;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.campo_pesquisa > button:hover {
+    cursor: pointer;
+    background-color: rgb(32, 122, 32);
+}
+
+.table-container {
+    width: 95%;
+    margin: 2% auto 0;
+    overflow-x: auto;
+    border-radius: 5px;
+}
+
+table {
+    width: 100%;
+    min-width: 500px;
+    border-collapse: collapse;
+}
+
+tr {
+    background-color: white;
+}
+
+th {
+    background-color: #172554;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+    background-color: #dbeafe;
+}
+
+@media (max-width: 768px) {
+    header > h1,
+    header > div > h1 {
+        font-size: 1.4rem;
+    }
+
+    .table-container {
+        width: 95%;
+        margin-top: 7%;
+    }
+
+    .campo_pesquisa {
+        margin-top: 7%;
+    }
+
+    .campo_pesquisa > input {
+        width: 75%;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    header > h1,
+    header > div > h1 {
+        font-size: 1.2rem;
+    }
+
+    header > div > p {
+        font-size: 0.8rem;
+    }
+
+    header > button {
+        padding: 10px;
+        font-size: 0.7rem;
+    }
+
+    .table-container {
+        width: 95%;
+        margin-top: 10%;
+    }
+
+    .campo_pesquisa {
+        margin-top: 10%;
+        padding: 0 2.5%;
+        gap: 7px;
+    }
+
+    .campo_pesquisa > input {
+        width: auto;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .campo_pesquisa > button {
+        width: 85px;
+        flex-shrink: 0;
+    }
+
+    th, td {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+}
