@@ -33,7 +33,7 @@ do banco de dados.
 
 <div align="center">
 
-<img width="767" height="610" alt="image" src="https://github.com/user-attachments/assets/0f43901f-54cc-4431-af8a-f111d22cdbc2" />
+<img width="915" height="636" alt="Captura de tela 2026-11-10 111309" src="https://github.com/user-attachments/assets/941fe604-7b87-4397-a0fb-cd3ba3526614" />
 
 </div>
 
