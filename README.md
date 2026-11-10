@@ -4,7 +4,7 @@
 
 ### Documentação dos modelos conceitual e lógico
 
-![Status](https://img.shields.io/badge/Status-Concluído-success?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Em_Andamento-success?style=for-the-badge)
 ![Markdown](https://img.shields.io/badge/Documentação-Markdown-blue?style=for-the-badge)
 
 </div>
