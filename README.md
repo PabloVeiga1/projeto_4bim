@@ -1,4 +1,5 @@
 **1.Modelo Conceitual**
 
-<img width="1033" height="731" alt="Captura de Tela (7)" src="https://github.com/user-attachments/assets/14f01feb-3d4a-4281-a8e6-9d55e695f6ac" />
+<img width="767" height="610" alt="image" src="https://github.com/user-attachments/assets/0f43901f-54cc-4431-af8a-f111d22cdbc2" />
+
 
