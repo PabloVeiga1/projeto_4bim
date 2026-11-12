@@ -24,6 +24,14 @@
   font-weight: 600;
   cursor: pointer;
   padding: 4px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.15s ease;
+}
+
+.btn-back .btn-icon {
+  font-size: 16px;
 }
 
 .btn-back:hover {
@@ -47,16 +55,29 @@
   margin-bottom: 24px;
 }
 
+.form-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.form-header-icon {
+  font-size: 28px;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
 .form-card-header h2 {
   font-size: 20px;
   font-weight: 700;
   color: #0f172a;
-  margin-bottom: 4px;
+  margin: 0 0 4px;
 }
 
 .form-card-header p {
   font-size: 13.5px;
   color: #64748b;
+  margin: 0;
 }
 
 .btn-close {
@@ -67,6 +88,9 @@
   color: #94a3b8;
   cursor: pointer;
   padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-close:hover {
@@ -82,6 +106,14 @@
   font-size: 13.5px;
   font-weight: 500;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alert-success .alert-icon {
+  font-size: 18px;
+  flex-shrink: 0;
 }
 
 .form-content {
@@ -149,6 +181,19 @@
   margin-top: 4px;
 }
 
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  accent-color: #2563eb;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;
@@ -166,7 +211,15 @@
   border-radius: 6px;
   font-size: 13.5px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-cancel .btn-icon {
+  font-size: 16px;
 }
 
 .btn-cancel:hover:not(:disabled) {
@@ -182,7 +235,15 @@
   border-radius: 6px;
   font-size: 13.5px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-submit .btn-icon {
+  font-size: 16px;
 }
 
 .btn-submit:hover:not(:disabled) {
@@ -211,5 +272,6 @@
   .btn-submit,
   .btn-cancel {
     width: 100%;
+    justify-content: center;
   }
 }

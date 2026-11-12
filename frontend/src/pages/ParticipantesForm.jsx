@@ -1,5 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  IoArrowBackOutline,
+  IoPersonAddOutline,
+  IoCloseOutline,
+  IoCheckmarkOutline
+} from "react-icons/io5";
 import "../styles/ParticipantesForm.css";
 
 function ParticipanteForm() {
@@ -51,14 +57,18 @@ function ParticipanteForm() {
           onClick={() => navigate("/participantes")}
           className="btn-back"
         >
-          ← Voltar para a lista
+          <IoArrowBackOutline className="btn-icon" />
+          <span>Voltar para a lista</span>
         </button>
 
         <section className="form-card">
           <header className="form-card-header">
-            <div>
-              <h2>Novo Participante</h2>
-              <p>Cadastre as informações do participante</p>
+            <div className="form-title-row">
+              <IoPersonAddOutline className="form-header-icon" />
+              <div>
+                <h2>Novo Participante</h2>
+                <p>Cadastre as informações do participante</p>
+              </div>
             </div>
             <button
               type="button"
@@ -66,13 +76,14 @@ function ParticipanteForm() {
               onClick={() => navigate("/participantes")}
               title="Fechar"
             >
-              ×
+              <IoCloseOutline />
             </button>
           </header>
 
           {success && (
             <div className="alert-success">
-              Participante cadastrado com sucesso! Redirecionando...
+              <IoCheckmarkOutline className="alert-icon" />
+              <span>Participante cadastrado com sucesso! Redirecionando...</span>
             </div>
           )}
 
@@ -198,14 +209,16 @@ function ParticipanteForm() {
                 onClick={() => navigate("/participantes")}
                 disabled={isSubmitting}
               >
-                Cancelar
+                <IoCloseOutline className="btn-icon" />
+                <span>Cancelar</span>
               </button>
               <button
                 type="submit"
                 className="btn-submit"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Salvando..." : "Cadastrar Participante"}
+                <IoCheckmarkOutline className="btn-icon" />
+                <span>{isSubmitting ? "Salvando..." : "Cadastrar Participante"}</span>
               </button>
             </div>
           </form>

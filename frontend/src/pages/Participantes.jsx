@@ -1,5 +1,15 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  IoPeopleOutline,
+  IoHomeOutline,
+  IoLogOutOutline,
+  IoAddOutline,
+  IoSearchOutline,
+  IoPencilOutline,
+  IoTrashOutline,
+  IoCloseOutline
+} from "react-icons/io5";
 import "../styles/Participantes.css";
 
 const DADOS_INICIAIS = [
@@ -116,15 +126,18 @@ export default function Participantes() {
       <nav className="navbar">
         <div className="navbar-content">
           <Link to="/dashboard" className="navbar-logo">
-            Portal de Participantes
+            <IoPeopleOutline className="logo-icon" />
+            <span>Portal de Participantes</span>
           </Link>
           <div className="navbar-right">
             <Link to="/dashboard" className="btn-nav-dashboard">
-              Início / Dashboard
+              <IoHomeOutline className="btn-icon" />
+              <span>Dashboard</span>
             </Link>
             <span className="navbar-user">Administrador</span>
             <button onClick={() => navigate("/")} className="btn-logout">
-              Sair
+              <IoLogOutOutline className="btn-icon" />
+              <span>Sair</span>
             </button>
           </div>
         </div>
@@ -139,7 +152,8 @@ export default function Participantes() {
             <p>Lista e controle de membros cadastrados</p>
           </div>
           <Link to="/participantesform" className="btn-primary-action">
-            + Novo Participante
+            <IoAddOutline className="btn-icon" />
+            <span>Novo Participante</span>
           </Link>
         </div>
 
@@ -165,13 +179,25 @@ export default function Participantes() {
 
         {/* Filters */}
         <div className="filters-bar">
-          <input
-            type="text"
-            placeholder="Pesquisar por nome, e-mail, curso..."
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-            className="input-search"
-          />
+          <div className="search-wrapper">
+            <IoSearchOutline className="search-icon" />
+            <input
+              type="text"
+              placeholder="Pesquisar por nome, e-mail, curso..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className="input-search"
+            />
+            {busca && (
+              <button
+                type="button"
+                className="btn-clear-search"
+                onClick={() => setBusca("")}
+              >
+                <IoCloseOutline />
+              </button>
+            )}
+          </div>
 
           <div className="selects-row">
             <select
@@ -239,14 +265,16 @@ export default function Participantes() {
                     </td>
                     <td className="cell-actions">
                       <Link to="/participantesform" className="btn-table-edit">
-                        Editar
+                        <IoPencilOutline className="btn-icon" />
+                        <span>Editar</span>
                       </Link>
                       <button
                         type="button"
                         onClick={() => handleExcluir(p.id, p.nome)}
                         className="btn-table-delete"
                       >
-                        Excluir
+                        <IoTrashOutline className="btn-icon" />
+                        <span>Excluir</span>
                       </button>
                     </td>
                   </tr>

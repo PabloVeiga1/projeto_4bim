@@ -1,5 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { 
+  IoPersonCircleSharp, 
+  IoMailOutline, 
+  IoLockClosedOutline, 
+  IoEyeOutline, 
+  IoEyeOffOutline, 
+  IoLogInOutline,
+  IoFlashOutline
+} from "react-icons/io5";
 import "../styles/Login.css";
 
 function Login() {
@@ -18,23 +27,29 @@ function Login() {
     <div className="login-wrapper">
       <main className="login-card">
         <div className="login-header">
-          <h1>Entrar</h1>
+          <div className="login-title-row">
+            <IoPersonCircleSharp className="login-header-icon" />
+            <h1>Login</h1>
+          </div>
           <p>Informe suas credenciais para acessar o painel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
             <label htmlFor="email">E-mail</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="seu.email@exemplo.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              autoComplete="email"
-            />
+            <div className="input-box">
+              <IoMailOutline className="field-icon" />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="seu.email@exemplo.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+            </div>
           </div>
 
           <div className="form-group">
@@ -42,22 +57,27 @@ function Login() {
               <label htmlFor="password">Senha</label>
               <button
                 type="button"
-                className="btn-link-action"
+                className="btn-toggle-eye"
                 onClick={() => setShowPassword(!showPassword)}
+                title={showPassword ? "Ocultar senha" : "Ver senha"}
               >
-                {showPassword ? "Ocultar" : "Mostrar"}
+                {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                <span>{showPassword ? "Ocultar" : "Mostrar"}</span>
               </button>
             </div>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-              placeholder="Sua senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete="current-password"
-            />
+            <div className="input-box">
+              <IoLockClosedOutline className="field-icon" />
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                placeholder="Sua senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
+            </div>
           </div>
 
           <div className="form-options">
@@ -82,7 +102,8 @@ function Login() {
           </div>
 
           <button type="submit" className="btn-solid-primary">
-            Entrar
+            <IoLogInOutline className="btn-icon" />
+            <span>Entrar</span>
           </button>
 
           <button
@@ -90,7 +111,8 @@ function Login() {
             className="btn-solid-secondary"
             onClick={() => navigate("/dashboard")}
           >
-            Acessar sem login
+            <IoFlashOutline className="btn-icon" />
+            <span>Acessar sem login</span>
           </button>
 
           <p className="login-footer">

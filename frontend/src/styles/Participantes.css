@@ -37,35 +37,56 @@
   font-size: 16px;
   font-weight: 700;
   color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.navbar-logo:hover {
+  text-decoration: none;
+  color: #2563eb;
+}
+
+.logo-icon {
+  font-size: 20px;
+  color: #2563eb;
 }
 
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-
-.navbar-user {
-  font-size: 13px;
-  color: #64748b;
-  font-weight: 500;
+  gap: 14px;
 }
 
 .btn-nav-dashboard {
   font-size: 13px;
   font-weight: 600;
   color: #2563eb;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 6px;
   background-color: #eff6ff;
   border: 1px solid #bfdbfe;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: all 0.15s ease;
+}
+
+.btn-nav-dashboard .btn-icon {
+  font-size: 15px;
 }
 
 .btn-nav-dashboard:hover {
   background-color: #dbeafe;
   text-decoration: none;
+}
+
+.navbar-user {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
 }
 
 .btn-logout {
@@ -76,7 +97,14 @@
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: background-color 0.15s ease;
+}
+
+.btn-logout .btn-icon {
+  font-size: 15px;
 }
 
 .btn-logout:hover {
@@ -121,7 +149,14 @@
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: background-color 0.15s ease;
+}
+
+.btn-primary-action .btn-icon {
+  font-size: 18px;
 }
 
 .btn-primary-action:hover {
@@ -175,10 +210,25 @@
   gap: 12px;
 }
 
-.input-search {
+.search-wrapper {
+  position: relative;
   flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-wrapper .search-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 16px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.input-search {
+  width: 100%;
   height: 38px;
-  padding: 0 12px;
+  padding: 0 32px 0 36px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   font-size: 13.5px;
@@ -188,6 +238,23 @@
 
 .input-search:focus {
   border-color: #2563eb;
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-clear-search:hover {
+  color: #334155;
 }
 
 .selects-row {
@@ -318,7 +385,15 @@
   color: #2563eb;
   font-size: 13px;
   font-weight: 600;
-  margin-right: 12px;
+  margin-right: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+
+.btn-table-edit .btn-icon {
+  font-size: 15px;
 }
 
 .btn-table-edit:hover {
@@ -333,6 +408,13 @@
   font-weight: 600;
   padding: 0;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-table-delete .btn-icon {
+  font-size: 15px;
 }
 
 .btn-table-delete:hover {
@@ -361,6 +443,7 @@
 
   .btn-primary-action {
     text-align: center;
+    justify-content: center;
   }
 
   .stats-row {

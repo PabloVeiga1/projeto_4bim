@@ -1,5 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  IoPersonAddOutline,
+  IoPersonOutline,
+  IoMailOutline,
+  IoLockClosedOutline,
+  IoEyeOutline,
+  IoEyeOffOutline,
+  IoCheckmarkOutline
+} from "react-icons/io5";
 import "../styles/Register.css";
 
 function Register() {
@@ -45,7 +54,10 @@ function Register() {
     <div className="register-wrapper">
       <main className="register-card">
         <header className="register-header">
-          <h1>Criar Conta</h1>
+          <div className="register-title-row">
+            <IoPersonAddOutline className="register-header-icon" />
+            <h1>Criar Conta</h1>
+          </div>
           <p>Preencha os campos abaixo para se cadastrar</p>
         </header>
 
@@ -58,30 +70,36 @@ function Register() {
         <form className="register-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Nome completo</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Digite seu nome completo"
-              value={formData.name}
-              onChange={handleChange}
-              autoComplete="name"
-              required
-            />
+            <div className="input-box">
+              <IoPersonOutline className="field-icon" />
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Digite seu nome completo"
+                value={formData.name}
+                onChange={handleChange}
+                autoComplete="name"
+                required
+              />
+            </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="email">E-mail</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="seu.email@exemplo.com"
-              value={formData.email}
-              onChange={handleChange}
-              autoComplete="email"
-              required
-            />
+            <div className="input-box">
+              <IoMailOutline className="field-icon" />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="seu.email@exemplo.com"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="email"
+                required
+              />
+            </div>
           </div>
 
           <div className="form-row">
@@ -90,36 +108,43 @@ function Register() {
                 <label htmlFor="password">Senha</label>
                 <button
                   type="button"
-                  className="btn-link-action"
+                  className="btn-toggle-eye"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "Ocultar" : "Mostrar"}
+                  {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                  <span>{showPassword ? "Ocultar" : "Mostrar"}</span>
                 </button>
               </div>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                placeholder="Mínimo 6 caracteres"
-                value={formData.password}
-                onChange={handleChange}
-                autoComplete="new-password"
-                required
-              />
+              <div className="input-box">
+                <IoLockClosedOutline className="field-icon" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  placeholder="Mínimo 6 dígitos"
+                  value={formData.password}
+                  onChange={handleChange}
+                  autoComplete="new-password"
+                  required
+                />
+              </div>
             </div>
 
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirmar senha</label>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="confirmPassword"
-                name="confirmPassword"
-                placeholder="Repita a senha"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                autoComplete="new-password"
-                required
-              />
+              <div className="input-box">
+                <IoLockClosedOutline className="field-icon" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="Repita a senha"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  autoComplete="new-password"
+                  required
+                />
+              </div>
             </div>
           </div>
 
@@ -137,7 +162,8 @@ function Register() {
           </div>
 
           <button type="submit" className="btn-solid-primary">
-            Cadastrar
+            <IoCheckmarkOutline className="btn-icon" />
+            <span>Cadastrar</span>
           </button>
 
           <p className="register-footer">

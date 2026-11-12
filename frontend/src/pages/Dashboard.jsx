@@ -1,4 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
+import {
+  IoHomeOutline,
+  IoPeopleOutline,
+  IoPersonAddOutline,
+  IoCalendarOutline,
+  IoLayersOutline,
+  IoMicOutline,
+  IoReceiptOutline,
+  IoBarChartOutline,
+  IoLogOutOutline,
+  IoArrowForwardOutline
+} from "react-icons/io5";
 import "../styles/Dashboard.css";
 
 function Dashboard() {
@@ -15,35 +27,43 @@ function Dashboard() {
 
         <nav className="sidebar-nav">
           <Link to="/dashboard" className="nav-item ativo">
-            Início
+            <IoHomeOutline className="nav-icon" />
+            <span>Início</span>
           </Link>
 
           <Link to="/participantes" className="nav-item">
-            Participantes
+            <IoPeopleOutline className="nav-icon" />
+            <span>Participantes</span>
           </Link>
 
           <Link to="/participantesform" className="nav-item">
-            Novo Cadastro
+            <IoPersonAddOutline className="nav-icon" />
+            <span>Novo Cadastro</span>
           </Link>
 
           <Link to="/eventos" className="nav-item">
-            Eventos
+            <IoCalendarOutline className="nav-icon" />
+            <span>Eventos</span>
           </Link>
 
           <Link to="/atividades" className="nav-item">
-            Atividades
+            <IoLayersOutline className="nav-icon" />
+            <span>Atividades</span>
           </Link>
 
           <Link to="/palestrantes" className="nav-item">
-            Palestrantes
+            <IoMicOutline className="nav-icon" />
+            <span>Palestrantes</span>
           </Link>
 
           <Link to="/inscricoes" className="nav-item">
-            Inscrições
+            <IoReceiptOutline className="nav-icon" />
+            <span>Inscrições</span>
           </Link>
 
           <Link to="/relatorios" className="nav-item">
-            Relatórios
+            <IoBarChartOutline className="nav-icon" />
+            <span>Relatórios</span>
           </Link>
         </nav>
 
@@ -53,7 +73,8 @@ function Dashboard() {
             onClick={() => navigate("/")}
             className="btn-sidebar-logout"
           >
-            Sair da conta
+            <IoLogOutOutline className="btn-icon" />
+            <span>Sair da conta</span>
           </button>
         </div>
       </aside>
@@ -86,7 +107,8 @@ function Dashboard() {
             </p>
           </div>
           <Link to="/participantes" className="btn-boas-vindas">
-            Ver Participantes
+            <span>Ver Participantes</span>
+            <IoArrowForwardOutline className="btn-icon" />
           </Link>
         </section>
 
@@ -126,32 +148,50 @@ function Dashboard() {
 
           <div className="acessos-grid">
             <Link to="/participantes" className="acesso-card destaque">
-              <div className="card-badge">Principal</div>
+              <div className="card-top-row">
+                <IoPeopleOutline className="card-icon" />
+                <span className="card-badge">Principal</span>
+              </div>
               <h3>Participantes</h3>
               <p>Visualizar lista, filtrar status e gerenciar membros.</p>
             </Link>
 
             <Link to="/participantesform" className="acesso-card">
+              <div className="card-top-row">
+                <IoPersonAddOutline className="card-icon" />
+              </div>
               <h3>Novo Participante</h3>
               <p>Cadastrar novo estudante, professor ou visitante.</p>
             </Link>
 
             <Link to="/eventos" className="acesso-card">
+              <div className="card-top-row">
+                <IoCalendarOutline className="card-icon" />
+              </div>
               <h3>Eventos</h3>
               <p>Gerencie datas, locais e cronogramas acadêmicos.</p>
             </Link>
 
             <Link to="/atividades" className="acesso-card">
+              <div className="card-top-row">
+                <IoLayersOutline className="card-icon" />
+              </div>
               <h3>Atividades</h3>
               <p>Gerencie palestras, minicursos e mesas-redondas.</p>
             </Link>
 
             <Link to="/palestrantes" className="acesso-card">
+              <div className="card-top-row">
+                <IoMicOutline className="card-icon" />
+              </div>
               <h3>Palestrantes</h3>
               <p>Cadastro e gerenciamento de palestrantes convidados.</p>
             </Link>
 
             <Link to="/relatorios" className="acesso-card">
+              <div className="card-top-row">
+                <IoBarChartOutline className="card-icon" />
+              </div>
               <h3>Relatórios</h3>
               <p>Exportação de presença, certificados e dados gerais.</p>
             </Link>
