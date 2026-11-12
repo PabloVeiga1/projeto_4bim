@@ -1,0 +1,163 @@
+.form-overlay {
+position: fixed;
+inset: 0;
+z-index: 1000;
+background: rgba(15, 23, 42, 0.55);
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 20px;
+overflow-y: auto;
+}
+
+.participante-form-container {
+width: 100%;
+max-width: 600px;
+max-height: 90vh;
+overflow-y: auto;
+background: white;
+border-radius: 14px;
+padding: 28px;
+box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.form-header {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+margin-bottom: 25px;
+}
+
+.form-header h2 {
+margin: 0 0 7px;
+color: #1f2937;
+font-size: 22px;
+}
+
+.form-header p {
+margin: 0;
+color: #6b7280;
+font-size: 14px;
+}
+
+.form-fechar {
+background: transparent;
+border: none;
+color: #6b7280;
+font-size: 28px;
+cursor: pointer;
+line-height: 1;
+}
+
+.form-campos {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 18px;
+}
+
+.campo {
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.campo label {
+font-size: 13px;
+font-weight: 600;
+color: #374151;
+}
+
+.campo input,
+.campo select {
+width: 100%;
+box-sizing: border-box;
+padding: 12px;
+border: 1px solid #d1d5db;
+border-radius: 7px;
+font-size: 14px;
+outline: none;
+background: white;
+}
+
+.campo input:focus,
+.campo select:focus {
+border-color: #2563eb;
+box-shadow: 0 0 0 3px #2563eb20;
+}
+
+.campo-completo {
+grid-column: 1 / -1;
+}
+
+.checkbox-termos {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+margin-top: 22px;
+color: #4b5563;
+font-size: 13px;
+line-height: 1.5;
+cursor: pointer;
+}
+
+.checkbox-termos input {
+margin-top: 3px;
+accent-color: #2563eb;
+}
+
+.form-acoes {
+display: flex;
+justify-content: flex-end;
+gap: 12px;
+margin-top: 28px;
+}
+
+.form-acoes button {
+padding: 12px 18px;
+border: none;
+border-radius: 7px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s;
+}
+
+.btn-cancelar {
+background: #f3f4f6;
+color: #374151;
+}
+
+.btn-cancelar:hover {
+background: #e5e7eb;
+}
+
+.btn-salvar {
+background: #2563eb;
+color: white;
+}
+
+.btn-salvar:hover {
+background: #1d4ed8;
+}
+
+@media (max-width: 550px) {
+.participante-form-container {
+padding: 20px;
+}
+
+.form-campos {
+grid-template-columns: 1fr;
+}
+
+.campo-completo {
+grid-column: auto;
+}
+
+.form-acoes {
+flex-direction: column-reverse;
+}
+
+.form-acoes button {
+width: 100%;
+}
+}
