@@ -1,109 +1,157 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.login-wrapper {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background-color: #f8fafc;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f3f4f6;
-    min-height: 100vh;
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 36px 32px;
 }
 
-.login-container {
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
-    padding: 40px;
-    
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.login-header {
+  margin-bottom: 28px;
 }
 
-.login-container h1 {
-    text-align: center;
-    color: #1f2937;
-    font-size: 28px;
-    margin-bottom: 30px;
+.login-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.login-header p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .form-group label {
-    color: #374151;
-    font-size: 14px;
-    font-weight: 600;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-link-action {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #2563eb;
+  font-weight: 500;
+  padding: 0;
+  cursor: pointer;
+}
+
+.btn-link-action:hover {
+  text-decoration: underline;
 }
 
 .form-group input {
-    width: 100%;
-    padding: 12px 14px;
-
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-
-    font-size: 15px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s ease;
 }
 
 .form-group input:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: #2563eb;
 }
 
-.login-container button {
-    width: 100%;
-    padding: 13px;
-
-    background-color: #2563eb;
-    color: #ffffff;
-
-    border: none;
-    border-radius: 6px;
-
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-
-    transition: background-color 0.2s;
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
 }
 
-.login-container button:hover {
-    background-color: #1d4ed8;
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  cursor: pointer;
 }
 
-.login-container p {
-    margin-top: 24px;
-    text-align: center;
-    color: #6b7280;
-    font-size: 14px;
+.checkbox-label input {
+  accent-color: #2563eb;
 }
 
-.login-container a {
-    color: #2563eb;
-    text-decoration: none;
-    font-weight: 600;
+.forgot-link {
+  color: #2563eb;
+  font-size: 13px;
 }
 
-.login-container a:hover {
-    text-decoration: underline;
+.btn-solid-primary {
+  width: 100%;
+  height: 42px;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
 }
 
-@media (max-width: 480px) {
-    .login-container {
-        width: calc(100% - 32px);
-        padding: 30px 24px;
-    }
+.btn-solid-primary:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-solid-secondary {
+  width: 100%;
+  height: 40px;
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+
+.btn-solid-secondary:hover {
+  background-color: #e2e8f0;
+}
+
+.login-footer {
+  text-align: center;
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.login-footer a {
+  color: #2563eb;
+  font-weight: 600;
 }
