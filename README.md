@@ -33,7 +33,7 @@ do banco de dados.
 
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/14f01feb-3d4a-4281-a8e6-9d55e695f6ac" width="85%">
+<img width="915" height="636" alt="Captura de tela 2026-11-10 111309" src="https://github.com/user-attachments/assets/941fe604-7b87-4397-a0fb-cd3ba3526614" />
 
 </div>
 
@@ -54,11 +54,5 @@ relacionamentos.
 ---
 
 <div align="center">
-
-**Desenvolvido como parte de um projeto acadêmico.**
-
-</div>
-
-<img width="767" height="610" alt="image" src="https://github.com/user-attachments/assets/0f43901f-54cc-4431-af8a-f111d22cdbc2" />
 
 

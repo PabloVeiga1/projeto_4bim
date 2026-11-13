@@ -1,78 +1,178 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  IoPersonAddOutline,
+  IoPersonOutline,
+  IoMailOutline,
+  IoLockClosedOutline,
+  IoEyeOutline,
+  IoEyeOffOutline,
+  IoCheckmarkOutline
+} from "react-icons/io5";
 import "../styles/Register.css";
 
 function Register() {
-    return (
-    <main className="register-container">
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    acceptTerms: false
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
+    }));
+    if (error) setError("");
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      setError("As senhas informadas não conferem.");
+      return;
+    }
+    if (formData.password.length < 6) {
+      setError("A senha deve ter no mínimo 6 caracteres.");
+      return;
+    }
+    if (!formData.acceptTerms) {
+      setError("Você deve concordar com os termos para prosseguir.");
+      return;
+    }
+
+    navigate("/dashboard");
+  };
+
+  return (
+    <div className="register-wrapper">
+      <main className="register-card">
         <header className="register-header">
-            <h1>Criar conta</h1>
-            <p>Preencha seus dados para acessar o sistema.</p>
+          <div className="register-title-row">
+            <IoPersonAddOutline className="register-header-icon" />
+            <h1>Criar Conta</h1>
+          </div>
+          <p>Preencha os campos abaixo para se cadastrar</p>
         </header>
 
-        <form className="register-form">
-            <div className="register-group">
-                <label htmlFor="name">Nome completo:</label>
+        {error && (
+          <div className="alert-error">
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form className="register-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="name">Nome completo</label>
+            <div className="input-box">
+              <IoPersonOutline className="field-icon" />
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Digite seu nome completo"
+                value={formData.name}
+                onChange={handleChange}
+                autoComplete="name"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">E-mail</label>
+            <div className="input-box">
+              <IoMailOutline className="field-icon" />
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="seu.email@exemplo.com"
+                value={formData.email}
+                onChange={handleChange}
+                autoComplete="email"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="password">Senha</label>
+                <button
+                  type="button"
+                  className="btn-toggle-eye"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                  <span>{showPassword ? "Ocultar" : "Mostrar"}</span>
+                </button>
+              </div>
+              <div className="input-box">
+                <IoLockClosedOutline className="field-icon" />
                 <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Digite seu nome completo"
-                    autoComplete="name"
-                    required
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  placeholder="Mínimo 6 dígitos"
+                  value={formData.password}
+                  onChange={handleChange}
+                  autoComplete="new-password"
+                  required
                 />
+              </div>
             </div>
 
-            <div className="register-group">
-                <label htmlFor="email">E-mail:</label>
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirmar senha</label>
+              <div className="input-box">
+                <IoLockClosedOutline className="field-icon" />
                 <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="contato@gmail.com"
-                    autoComplete="email"
-                    required
+                  type={showPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="Repita a senha"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  autoComplete="new-password"
+                  required
                 />
+              </div>
             </div>
+          </div>
 
-            <div className="register-group">
-                <label htmlFor="password">Senha:</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Crie uma senha"
-                    autoComplete="new-password"
-                    required
-                />
-            </div>
+          <div className="form-terms">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="acceptTerms"
+                checked={formData.acceptTerms}
+                onChange={handleChange}
+                required
+              />
+              <span>Concordo com os Termos de Uso e Política de Privacidade</span>
+            </label>
+          </div>
 
-            <div className="register-group">
-                <label htmlFor="confirmPassword">
-                    Confirmar senha:
-                </label>
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    placeholder="Digite sua senha novamente"
-                    autoComplete="new-password"
-                    required
-                />
-            </div>
+          <button type="submit" className="btn-solid-primary">
+            <IoCheckmarkOutline className="btn-icon" />
+            <span>Cadastrar</span>
+          </button>
 
-            <button type="submit">
-                Criar conta
-            </button>
-
-            <p className="register-footer">
-                Já possui uma conta?
-                <Link to="/"> Fazer login</Link>
-            </p>
+          <p className="register-footer">
+            Já possui uma conta? <Link to="/">Fazer login</Link>
+          </p>
         </form>
-    </main>
-    );
+      </main>
+    </div>
+  );
 }
 
 export default Register;
-
-
