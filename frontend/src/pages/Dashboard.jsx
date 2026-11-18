@@ -36,11 +36,6 @@ function Dashboard() {
             <span>Participantes</span>
           </Link>
 
-          <Link to="/participantesform" className="nav-item">
-            <IoPersonAddOutline className="nav-icon" />
-            <span>Novo Cadastro</span>
-          </Link>
-
           <Link to="/eventos" className="nav-item">
             <IoCalendarOutline className="nav-icon" />
             <span>Eventos</span>
@@ -87,17 +82,8 @@ function Dashboard() {
             <h1>Painel Principal</h1>
             <p>Visão geral e gestão de eventos acadêmicos</p>
           </div>
-
-          <div className="perfil-usuario">
-            <div className="perfil-avatar">AD</div>
-            <div className="perfil-info">
-              <span className="perfil-nome">Administrador</span>
-              <span className="perfil-status">Online</span>
-            </div>
-          </div>
         </header>
 
-        {/* Card de Boas-Vindas */}
         <section className="dashboard-boas-vindas">
           <div className="boas-vindas-content">
             <h2>Gerencie seus eventos e participantes</h2>
@@ -112,34 +98,32 @@ function Dashboard() {
           </Link>
         </section>
 
-        {/* Indicadores / Estatísticas */}
         <section className="dashboard-indicadores">
           <article className="indicador-card">
             <span className="indicador-rotulo">Participantes</span>
-            <h2 className="indicador-valor">5</h2>
+            <h2 className="indicador-valor">0</h2>
             <p className="indicador-descricao">Membros cadastrados</p>
           </article>
 
           <article className="indicador-card">
             <span className="indicador-rotulo">Eventos Ativos</span>
-            <h2 className="indicador-valor">3</h2>
+            <h2 className="indicador-valor">0</h2>
             <p className="indicador-descricao">Eventos em andamento</p>
           </article>
 
           <article className="indicador-card">
             <span className="indicador-rotulo">Atividades</span>
-            <h2 className="indicador-valor">12</h2>
+            <h2 className="indicador-valor">0</h2>
             <p className="indicador-descricao">Palestras e oficinas</p>
           </article>
 
           <article className="indicador-card">
             <span className="indicador-rotulo">Inscrições</span>
-            <h2 className="indicador-valor">48</h2>
+            <h2 className="indicador-valor">0</h2>
             <p className="indicador-descricao">Inscrições confirmadas</p>
           </article>
         </section>
 
-        {/* Acessos Rápidos */}
         <section className="dashboard-acessos">
           <div className="secao-titulo">
             <h2>Acesso Rápido</h2>
@@ -150,7 +134,6 @@ function Dashboard() {
             <Link to="/participantes" className="acesso-card destaque">
               <div className="card-top-row">
                 <IoPeopleOutline className="card-icon" />
-                <span className="card-badge">Principal</span>
               </div>
               <h3>Participantes</h3>
               <p>Visualizar lista, filtrar status e gerenciar membros.</p>

@@ -182,17 +182,15 @@
   font-weight: 500;
 }
 
-/* Boas-Vindas */
 .dashboard-boas-vindas {
   padding: 24px 28px;
   border-radius: 8px;
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-left: 4px solid #2563eb;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  box-shadow: 3px 4px 6px rgba(179, 179, 179, 0.506);
 }
 
 .boas-vindas-content h2 {
@@ -244,12 +242,12 @@
 
 .indicador-card {
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 18px 20px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+   box-shadow: 3px 4px 6px rgba(179, 179, 179, 0.506);
 }
 
 .indicador-rotulo {
@@ -298,7 +296,7 @@
 .acesso-card {
   background-color: #ffffff;
   padding: 20px;
-  border: 1px solid #e2e8f0;
+  box-shadow: 3px 4px 6px rgba(179, 179, 179, 0.506);
   border-radius: 8px;
   text-decoration: none;
   color: #0f172a;
@@ -336,12 +334,8 @@
   text-decoration: none;
 }
 
-.acesso-card.destaque {
-  border-color: #bfdbfe;
-  background-color: #f0f7ff;
-}
 
-.acesso-card.destaque:hover {
+.acesso-card:hover {
   border-color: #2563eb;
   background-color: #e6f0fd;
 }
