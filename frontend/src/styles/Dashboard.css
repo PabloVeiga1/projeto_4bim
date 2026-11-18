@@ -86,10 +86,10 @@
   width: 100%;
   padding: 10px;
   background-color: #1e293b;
-  border: 1px solid #334155;
+  border: none;
   border-radius: 6px;
   color: #fca5a5;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -100,14 +100,13 @@
 }
 
 .btn-sidebar-logout .btn-icon {
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .btn-sidebar-logout:hover {
   background-color: #334155;
   color: #f87171;
 }
-
 /* Main Content */
 .dashboard-main {
   flex: 1;

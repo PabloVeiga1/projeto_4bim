@@ -13,12 +13,12 @@ import {
 } from "react-icons/io5";
 import "../styles/Dashboard.css";
 
+
 function Dashboard() {
   const navigate = useNavigate();
 
   return (
     <div className="dashboard">
-      {/* Barra Lateral / Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-logo">
           <h2>Eventos IFAL</h2>
