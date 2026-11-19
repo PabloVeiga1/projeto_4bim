@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  IoPersonCircleSharp, 
-  IoMailOutline, 
-  IoLockClosedOutline, 
-  IoEyeOutline, 
-  IoEyeOffOutline, 
-  IoLogInOutline,
-  IoFlashOutline
+
+import {
+  IoMailOutline,
+  IoLockClosedOutline,
+  IoEyeOutline,
+  IoEyeOffOutline,
+  IoLogInOutline
 } from "react-icons/io5";
+
+import api from "../services/api";
 import "../styles/Login.css";
 
 function Login() {
@@ -16,10 +17,37 @@ function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      sessionStorage.removeItem("modo_visitante");
+      await api("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          senha: password,
+          rememberMe
+        })
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAcessarSemLogin = () => {
+    sessionStorage.setItem("modo_visitante", "true");
     navigate("/dashboard");
   };
 
@@ -28,10 +56,11 @@ function Login() {
       <main className="login-card">
         <div className="login-header">
           <div className="login-title-row">
-            <IoPersonCircleSharp className="login-header-icon" />
             <h1>Login</h1>
           </div>
-          <p>Informe suas credenciais para acessar o painel</p>
+          <p>
+            Informe suas credenciais para acessar o painel
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -65,6 +94,7 @@ function Login() {
                 <span>{showPassword ? "Ocultar" : "Mostrar"}</span>
               </button>
             </div>
+
             <div className="input-box">
               <IoLockClosedOutline className="field-icon" />
               <input
@@ -89,29 +119,34 @@ function Login() {
               />
               <span>Lembrar de mim</span>
             </label>
-            <a
-              href="#recuperar"
-              onClick={(e) => {
-                e.preventDefault();
-                alert("Instruções enviadas para o seu e-mail.");
-              }}
-              className="forgot-link"
-            >
+
+            <Link to="/recuperar-senha" className="forgot-link">
               Esqueceu a senha?
-            </a>
+            </Link>
           </div>
 
-          <button type="submit" className="btn-solid-primary">
+          {error && (
+            <p className="login-error" role="alert">
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="btn-solid-primary"
+            disabled={loading}
+          >
             <IoLogInOutline className="btn-icon" />
-            <span>Entrar</span>
+            <span>
+              {loading ? "Entrando..." : "Entrar"}
+            </span>
           </button>
 
           <button
             type="button"
             className="btn-solid-secondary"
-            onClick={() => navigate("/dashboard")}
+            onClick={handleAcessarSemLogin}
           >
-            <IoFlashOutline className="btn-icon" />
             <span>Acessar sem login</span>
           </button>
 

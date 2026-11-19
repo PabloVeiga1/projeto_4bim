@@ -1,3 +1,8 @@
+/* =========================================
+   LOGIN & CADASTRO - HARMONIA COM O DASHBOARD
+   Paleta: #0f172a (Dark Slate), #2563eb (Primary Blue), #1e293b (Border/Hover)
+========================================= */
+
 .login-wrapper {
   min-height: 100vh;
   width: 100%;
@@ -5,47 +10,84 @@
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background-color: #f8fafc;
+
+  background-image: url("../img/ifal.jpeg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  position: relative;
 }
+
+/* Camada com tom azul-marinho escuro (combinando com a sidebar do dashboard) */
+.login-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.50);
+}
+
+/* =========================================
+   CARD DE LOGIN & CADASTRO - GLASSMORPHISM
+========================================= */
 
 .login-card {
+  position: relative;
+  z-index: 1;
+
   width: 100%;
-  max-width: 400px;
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
+  max-width: 420px;
+
+  /* Fundo translúcido escuro na cor #0f172a do dashboard */
+  background: rgba(15, 23, 42, 0.75);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+
   padding: 36px 32px;
+
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
 }
 
+/* =========================================
+   CABEÇALHO
+========================================= */
+
 .login-header {
-  margin-bottom: 24px;
+  margin-bottom: 26px;
+  text-align: center;
 }
 
 .login-title-row {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 6px;
 }
 
-.login-header-icon {
-  font-size: 28px;
-  color: #2563eb;
-  flex-shrink: 0;
-}
-
+.login-header h1,
 .login-title-row h1 {
   font-size: 24px;
   font-weight: 700;
-  color: #0f172a;
-  margin: 0;
+  color: #ffffff;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
 }
 
 .login-header p {
   font-size: 14px;
-  color: #64748b;
+  color: #94a3b8;
   margin: 0;
+  line-height: 1.4;
 }
+
+/* =========================================
+   FORMULÁRIO
+========================================= */
 
 .login-form {
   display: flex;
@@ -62,7 +104,7 @@
 .form-group label {
   font-size: 13px;
   font-weight: 600;
-  color: #334155;
+  color: #e2e8f0;
 }
 
 .label-row {
@@ -71,22 +113,34 @@
   align-items: center;
 }
 
+/* =========================================
+   BOTÃO MOSTRAR SENHA
+========================================= */
+
 .btn-toggle-eye {
   background: none;
   border: none;
   font-size: 12px;
-  color: #2563eb;
   font-weight: 500;
+  color: #94a3b8;
   padding: 0;
   cursor: pointer;
+
   display: inline-flex;
   align-items: center;
   gap: 4px;
+
+  transition: color 0.15s ease;
 }
 
 .btn-toggle-eye:hover {
+  color: #38bdf8;
   text-decoration: underline;
 }
+
+/* =========================================
+   INPUTS
+========================================= */
 
 .input-box {
   position: relative;
@@ -97,7 +151,7 @@
 .input-box .field-icon {
   position: absolute;
   left: 12px;
-  font-size: 17px;
+  font-size: 18px;
   color: #94a3b8;
   pointer-events: none;
   transition: color 0.15s ease;
@@ -105,106 +159,223 @@
 
 .input-box input {
   width: 100%;
-  height: 42px;
-  padding: 0 12px 0 38px;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
+  height: 44px;
+
+  padding: 0 12px 0 40px;
+
+  background: rgba(15, 23, 42, 0.60);
+
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 8px;
+
   font-size: 14px;
-  color: #0f172a;
+  color: #f8fafc;
+
   outline: none;
-  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-box input::placeholder {
+  color: #64748b;
 }
 
 .input-box input:focus {
   border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
 }
 
 .input-box:focus-within .field-icon {
-  color: #2563eb;
+  color: #3b82f6;
 }
+
+/* =========================================
+   OPÇÕES DO FORMULÁRIO (LEMBRAR / ESQUECEU)
+========================================= */
 
 .form-options {
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 13px;
+  gap: 10px;
 }
 
 .checkbox-label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #475569;
+  color: #cbd5e1;
   cursor: pointer;
+  font-size: 13px;
+  user-select: none;
 }
 
 .checkbox-label input {
   accent-color: #2563eb;
+  cursor: pointer;
 }
 
 .forgot-link {
-  color: #2563eb;
+  color: #3b82f6;
   font-size: 13px;
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
+
+.forgot-link:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+/* =========================================
+   ALERTAS DE ERRO E SUCESSO
+========================================= */
+
+.login-error {
+  padding: 10px 14px;
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  font-size: 13px;
+  border-radius: 8px;
+  margin: 0;
+  text-align: center;
+}
+
+.login-success {
+  padding: 10px 14px;
+  background: rgba(22, 163, 74, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #86efac;
+  font-size: 13px;
+  border-radius: 8px;
+  margin: 0;
+  text-align: center;
+}
+
+/* =========================================
+   BOTÃO PRINCIPAL (AZUL DASHBOARD)
+========================================= */
 
 .btn-solid-primary {
   width: 100%;
-  height: 42px;
+  height: 44px;
   background-color: #2563eb;
   color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: background-color 0.15s ease;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 
 .btn-solid-primary:hover {
   background-color: #1d4ed8;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+}
+
+.btn-solid-primary:active {
+  background-color: #1e40af;
+  transform: translateY(1px);
+}
+
+.btn-solid-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-solid-primary .btn-icon {
   font-size: 18px;
 }
 
+/* =========================================
+   BOTÃO SECUNDÁRIO
+========================================= */
+
 .btn-solid-secondary {
   width: 100%;
-  height: 40px;
-  background-color: #f1f5f9;
-  color: #334155;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  height: 42px;
+
+  background: rgba(255, 255, 255, 0.07);
+  color: #e2e8f0;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+
   font-size: 13px;
   font-weight: 600;
+
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: background-color 0.15s ease;
+
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .btn-solid-secondary:hover {
-  background-color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.btn-solid-secondary:active {
+  transform: translateY(1px);
 }
 
 .btn-solid-secondary .btn-icon {
   font-size: 16px;
-  color: #2563eb;
+  color: #38bdf8;
 }
+
+/* =========================================
+   RODAPÉ
+========================================= */
 
 .login-footer {
   text-align: center;
   font-size: 13px;
-  color: #64748b;
-  margin-top: 4px;
+  color: #94a3b8;
+  margin-top: 8px;
 }
 
 .login-footer a {
-  color: #2563eb;
+  color: #3b82f6;
   font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.login-footer a:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 480px) {
+  .login-wrapper {
+    padding: 16px;
+  }
+
+  .login-card {
+    padding: 30px 22px;
+  }
+
+  .login-header h1,
+  .login-title-row h1 {
+    font-size: 22px;
+  }
 }

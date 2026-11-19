@@ -82,6 +82,15 @@
   border-top: 1px solid #1e293b;
 }
 
+.sidebar-user-greeting {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
 .btn-sidebar-logout {
   width: 100%;
   padding: 10px;

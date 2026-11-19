@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   IoHomeOutline,
@@ -11,11 +12,36 @@ import {
   IoLogOutOutline,
   IoArrowForwardOutline
 } from "react-icons/io5";
+
+import api from "../services/api";
 import "../styles/Dashboard.css";
 
-
 function Dashboard() {
+  const [usuario, setUsuario] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    api("/auth/me")
+      .then((res) => {
+        if (res?.usuario) {
+          setUsuario(res.usuario);
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao carregar usuário:", err);
+      });
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      sessionStorage.removeItem("modo_visitante");
+      await api("/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Erro ao sair:", err);
+    } finally {
+      navigate("/login");
+    }
+  };
 
   return (
     <div className="dashboard">
@@ -63,9 +89,12 @@ function Dashboard() {
         </nav>
 
         <div className="sidebar-footer">
+          <p className="sidebar-user-greeting">
+            Olá, {usuario?.nome || "visitante"}
+          </p>
           <button
             type="button"
-            onClick={() => navigate("/")}
+            onClick={handleLogout}
             className="btn-sidebar-logout"
           >
             <IoLogOutOutline className="btn-icon" />
