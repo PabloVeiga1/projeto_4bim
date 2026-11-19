@@ -8,6 +8,7 @@ import {
   IoMicOutline,
   IoReceiptOutline,
   IoBarChartOutline,
+  IoShieldCheckmarkOutline,
   IoLogOutOutline,
   IoArrowForwardOutline
 } from "react-icons/io5";
@@ -59,6 +60,10 @@ function Dashboard() {
           <Link to="/relatorios" className="nav-item">
             <IoBarChartOutline className="nav-icon" />
             <span>Relatórios</span>
+          </Link>
+          <Link to="/usuarios" className="nav-item">
+            <IoShieldCheckmarkOutline className="nav-icon" />
+            <span>Usuários</span>
           </Link>
         </nav>
 
