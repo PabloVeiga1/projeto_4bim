@@ -10,6 +10,8 @@ import {
   IoTrashOutline,
   IoCloseOutline
 } from "react-icons/io5";
+
+import api from "../services/api";
 import "../styles/Participantes.css";
 
 const DADOS_INICIAIS = [
@@ -67,6 +69,17 @@ export default function Participantes() {
   const [filtroNivel, setFiltroNivel] = useState("Todos");
   const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      sessionStorage.removeItem("modo_visitante");
+      await api("/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Erro ao sair:", err);
+    } finally {
+      navigate("/login");
+    }
+  };
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -135,7 +148,7 @@ export default function Participantes() {
               <span>Dashboard</span>
             </Link>
             <span className="navbar-user">Administrador</span>
-            <button onClick={() => navigate("/")} className="btn-logout">
+            <button onClick={handleLogout} className="btn-logout">
               <IoLogOutOutline className="btn-icon" />
               <span>Sair</span>
             </button>

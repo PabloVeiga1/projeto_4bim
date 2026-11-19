@@ -1,174 +1,173 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  IoPersonAddOutline,
-  IoPersonOutline,
-  IoMailOutline,
-  IoLockClosedOutline,
-  IoEyeOutline,
-  IoEyeOffOutline,
-  IoCheckmarkOutline
-} from "react-icons/io5";
-import "../styles/Register.css";
+import { IoPersonOutline, IoMailOutline, IoLockClosedOutline } from "react-icons/io5";
+
+import api from "../services/api";
+
+import "../styles/Login.css";
 
 function Register() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    acceptTerms: false
-  });
-  const [showPassword, setShowPassword] = useState(false);
+
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
+
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
-    }));
-    if (error) setError("");
-  };
-
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      setError("As senhas informadas não conferem.");
-      return;
-    }
-    if (formData.password.length < 6) {
-      setError("A senha deve ter no mínimo 6 caracteres.");
-      return;
-    }
-    if (!formData.acceptTerms) {
-      setError("Você deve concordar com os termos para prosseguir.");
+
+    setError("");
+    setSuccess("");
+
+    if (senha !== confirmarSenha) {
+      setError("As senhas não coincidem.");
       return;
     }
 
-    navigate("/dashboard");
-  };
+    setLoading(true);
+
+    try {
+      const resposta = await api("/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          nome,
+          email,
+          senha
+        })
+      });
+
+      setSuccess(resposta.message);
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+
+    } catch (error) {
+      setError(error.message);
+
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className="register-wrapper">
-      <main className="register-card">
-        <header className="register-header">
-          <div className="register-title-row">
-            <IoPersonAddOutline className="register-header-icon" />
-            <h1>Criar Conta</h1>
-          </div>
-          <p>Preencha os campos abaixo para se cadastrar</p>
-        </header>
+    <div className="login-wrapper">
+      <main className="login-card">
 
-        {error && (
-          <div className="alert-error">
-            <span>{error}</span>
-          </div>
-        )}
+        <div className="login-header">
+          <h1>Cadastro</h1>
+          <p>Crie sua conta para acessar o sistema</p>
+        </div>
 
-        <form className="register-form" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="login-form">
+
           <div className="form-group">
-            <label htmlFor="name">Nome completo</label>
+            <label htmlFor="nome">Nome</label>
+
             <div className="input-box">
               <IoPersonOutline className="field-icon" />
+
               <input
+                id="nome"
                 type="text"
-                id="name"
-                name="name"
-                placeholder="Digite seu nome completo"
-                value={formData.name}
-                onChange={handleChange}
-                autoComplete="name"
+                placeholder="Seu nome"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
                 required
+                maxLength={100}
               />
             </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="email">E-mail</label>
+
             <div className="input-box">
               <IoMailOutline className="field-icon" />
+
               <input
-                type="email"
                 id="email"
-                name="email"
+                type="email"
                 placeholder="seu.email@exemplo.com"
-                value={formData.email}
-                onChange={handleChange}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                maxLength={150}
                 autoComplete="email"
-                required
               />
             </div>
           </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <div className="label-row">
-                <label htmlFor="password">Senha</label>
-                <button
-                  type="button"
-                  className="btn-toggle-eye"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
-                  <span>{showPassword ? "Ocultar" : "Mostrar"}</span>
-                </button>
-              </div>
-              <div className="input-box">
-                <IoLockClosedOutline className="field-icon" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  placeholder="Mínimo 6 dígitos"
-                  value={formData.password}
-                  onChange={handleChange}
-                  autoComplete="new-password"
-                  required
-                />
-              </div>
-            </div>
+          <div className="form-group">
+            <label htmlFor="senha">Senha</label>
 
-            <div className="form-group">
-              <label htmlFor="confirmPassword">Confirmar senha</label>
-              <div className="input-box">
-                <IoLockClosedOutline className="field-icon" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  placeholder="Repita a senha"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  autoComplete="new-password"
-                  required
-                />
-              </div>
-            </div>
-          </div>
+            <div className="input-box">
+              <IoLockClosedOutline className="field-icon" />
 
-          <div className="form-terms">
-            <label className="checkbox-label">
               <input
-                type="checkbox"
-                name="acceptTerms"
-                checked={formData.acceptTerms}
-                onChange={handleChange}
+                id="senha"
+                type="password"
+                placeholder="Mínimo de 8 caracteres"
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
                 required
+                minLength={8}
+                autoComplete="new-password"
               />
-              <span>Concordo com os Termos de Uso e Política de Privacidade</span>
-            </label>
+            </div>
           </div>
 
-          <button type="submit" className="btn-solid-primary">
-            <IoCheckmarkOutline className="btn-icon" />
-            <span>Cadastrar</span>
+          <div className="form-group">
+            <label htmlFor="confirmarSenha">
+              Confirmar senha
+            </label>
+
+            <div className="input-box">
+              <IoLockClosedOutline className="field-icon" />
+
+              <input
+                id="confirmarSenha"
+                type="password"
+                placeholder="Repita sua senha"
+                value={confirmarSenha}
+                onChange={(e) => setConfirmarSenha(e.target.value)}
+                required
+                minLength={8}
+                autoComplete="new-password"
+              />
+            </div>
+          </div>
+
+          {error && (
+            <p className="login-error" role="alert">
+              {error}
+            </p>
+          )}
+
+          {success && (
+            <p className="login-success" role="status">
+              {success}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="btn-solid-primary"
+            disabled={loading}
+          >
+            {loading ? "Cadastrando..." : "Criar conta"}
           </button>
 
-          <p className="register-footer">
-            Já possui uma conta? <Link to="/">Fazer login</Link>
+          <p className="login-footer">
+            Já possui uma conta? <Link to="/login">Entrar</Link>
           </p>
+
         </form>
       </main>
     </div>
