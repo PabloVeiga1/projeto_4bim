@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   IoArrowBackOutline,
   IoPersonAddOutline,
@@ -8,17 +8,23 @@ import {
 } from "react-icons/io5";
 import "../styles/ParticipantesForm.css";
 
+const STORAGE_KEY = "eventos_ifal_participantes";
+
 function ParticipanteForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const participanteEdicao = location.state?.participante || null;
+
   const [formData, setFormData] = useState({
-    nome: "",
-    cpf: "",
-    email: "",
-    telefone: "",
-    instituicao: "IFAL Maceió",
-    curso: "",
-    tipo: "Estudante",
-    termos: false
+    nome: participanteEdicao?.nome || "",
+    cpf: participanteEdicao?.cpf || "",
+    email: participanteEdicao?.email || "",
+    telefone: participanteEdicao?.telefone || "",
+    instituicao: participanteEdicao?.instituicao || "IFAL Maceió",
+    curso: participanteEdicao?.curso || "",
+    tipo: participanteEdicao?.nivel || participanteEdicao?.tipo || "Estudante",
+    status: participanteEdicao?.status || "Ativo",
+    termos: Boolean(participanteEdicao)
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,13 +46,44 @@ function ParticipanteForm() {
     }
 
     setIsSubmitting(true);
+
     setTimeout(() => {
+      const salvos = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || "[]"
+      );
+      const { termos, ...dados } = formData;
+      const participanteFormatado = {
+        ...dados,
+        nivel: dados.tipo
+      };
+
+      let novaLista;
+      if (participanteEdicao) {
+        novaLista = salvos.map((item) =>
+          item.id === participanteEdicao.id
+            ? { ...item, ...participanteFormatado }
+            : item
+        );
+      } else {
+        const novoId =
+          salvos.length > 0 ? Math.max(...salvos.map((i) => i.id)) + 1 : 1;
+        novaLista = [
+          ...salvos,
+          {
+            id: novoId,
+            ...participanteFormatado
+          }
+        ];
+      }
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(novaLista));
       setIsSubmitting(false);
       setSuccess(true);
+
       setTimeout(() => {
         navigate("/participantes");
-      }, 800);
-    }, 400);
+      }, 700);
+    }, 350);
   };
 
   return (
@@ -66,8 +103,16 @@ function ParticipanteForm() {
             <div className="form-title-row">
               <IoPersonAddOutline className="form-header-icon" />
               <div>
-                <h2>Novo Participante</h2>
-                <p>Cadastre as informações do participante</p>
+                <h2>
+                  {participanteEdicao
+                    ? "Editar Participante"
+                    : "Novo Participante"}
+                </h2>
+                <p>
+                  {participanteEdicao
+                    ? "Atualize as informações do participante"
+                    : "Cadastre as informações do participante"}
+                </p>
               </div>
             </div>
             <button
@@ -83,7 +128,11 @@ function ParticipanteForm() {
           {success && (
             <div className="alert-success">
               <IoCheckmarkOutline className="alert-icon" />
-              <span>Participante cadastrado com sucesso! Redirecionando...</span>
+              <span>
+                {participanteEdicao
+                  ? "Participante atualizado com sucesso! Redirecionando..."
+                  : "Participante cadastrado com sucesso! Redirecionando..."}
+              </span>
             </div>
           )}
 
@@ -218,7 +267,13 @@ function ParticipanteForm() {
                 disabled={isSubmitting}
               >
                 <IoCheckmarkOutline className="btn-icon" />
-                <span>{isSubmitting ? "Salvando..." : "Cadastrar Participante"}</span>
+                <span>
+                  {isSubmitting
+                    ? "Salvando..."
+                    : participanteEdicao
+                    ? "Salvar Alterações"
+                    : "Cadastrar Participante"}
+                </span>
               </button>
             </div>
           </form>

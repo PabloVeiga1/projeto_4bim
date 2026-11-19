@@ -6,12 +6,12 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Participantes from "./pages/Participantes";
 import ParticipantesForm from "./pages/ParticipantesForm";
-<<<<<<< HEAD
+
 import Palestrantes from "./pages/Palestrantes";
 import PalestrantesForm from "./pages/PalestrantesForm";
 import Usuarios from "./pages/Usuarios";
 import UsuariosForm from "./pages/UsuariosForm";
-=======
+
 import api from "./services/api";
 
 // Componente simples para proteger rotas privadas sem Context API
@@ -39,7 +39,6 @@ function RotaPrivada({ children }) {
 
   return autenticado ? children : <Navigate to="/login" replace />;
 }
->>>>>>> 7f82e38 (criei a tela de login / cadastro)
 
 const router = createBrowserRouter([
   {
@@ -47,45 +46,15 @@ const router = createBrowserRouter([
     element: <Login />
   },
   {
-<<<<<<< HEAD
-=======
     path: "/login",
     element: <Login />
   },
   {
->>>>>>> 7f82e38 (criei a tela de login / cadastro)
     path: "/register",
     element: <Register />
   },
   {
     path: "/dashboard",
-<<<<<<< HEAD
-    element: <Dashboard />
-  },
-  {
-    path: "/participantes",
-    element: <Participantes />
-  },
-  {
-    path: "/participantesform",
-    element: <ParticipantesForm />
-  },
-  {
-    path: "/palestrantes",
-    element: <Palestrantes />
-  },
-  {
-    path: "/palestrantesform",
-    element: <PalestrantesForm />
-  },
-  {
-    path: "/usuarios",
-    element: <Usuarios />
-  },
-  {
-    path: "/usuariosform",
-    element: <UsuariosForm />
-=======
     element: (
       <RotaPrivada>
         <Dashboard />
@@ -107,7 +76,38 @@ const router = createBrowserRouter([
         <ParticipantesForm />
       </RotaPrivada>
     )
->>>>>>> 7f82e38 (criei a tela de login / cadastro)
+  },
+  {
+    path: "/palestrantes",
+    element: (
+      <RotaPrivada>
+        <Palestrantes />
+      </RotaPrivada>
+    )
+  },
+  {
+    path: "/palestrantesform",
+    element: (
+      <RotaPrivada>
+        <PalestrantesForm />
+      </RotaPrivada>
+    )
+  },
+  {
+    path: "/usuarios",
+    element: (
+      <RotaPrivada>
+        <Usuarios />
+      </RotaPrivada>
+    )
+  },
+  {
+    path: "/usuariosform",
+    element: (
+      <RotaPrivada>
+        <UsuariosForm />
+      </RotaPrivada>
+    )
   }
 ]);
 

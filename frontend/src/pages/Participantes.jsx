@@ -14,6 +14,8 @@ import {
 import api from "../services/api";
 import "../styles/Participantes.css";
 
+const STORAGE_KEY = "eventos_ifal_participantes";
+
 const DADOS_INICIAIS = [
   {
     id: 1,
@@ -63,7 +65,19 @@ const DADOS_INICIAIS = [
 ];
 
 export default function Participantes() {
-  const [participantes, setParticipantes] = useState(DADOS_INICIAIS);
+  const [participantes, setParticipantes] = useState(() => {
+    const salvos = localStorage.getItem(STORAGE_KEY);
+    if (salvos) {
+      try {
+        return JSON.parse(salvos);
+      } catch (e) {
+        console.error("Erro ao carregar participantes salvos:", e);
+      }
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DADOS_INICIAIS));
+    return DADOS_INICIAIS;
+  });
+
   const [busca, setBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState("Todos");
   const [filtroNivel, setFiltroNivel] = useState("Todos");
@@ -86,37 +100,43 @@ export default function Participantes() {
     setTimeout(() => setToastMessage(""), 2500);
   };
 
+  const salvarLista = (novaLista) => {
+    setParticipantes(novaLista);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(novaLista));
+  };
+
   const handleExcluir = (id, nome) => {
-    if (window.confirm(`Deseja remover ${nome}?`)) {
-      setParticipantes((prev) => prev.filter((p) => p.id !== id));
-      showToast(`${nome} foi removido.`);
+    if (window.confirm(`Deseja remover o participante ${nome}?`)) {
+      const atualizada = participantes.filter((p) => p.id !== id);
+      salvarLista(atualizada);
+      showToast(`Participante ${nome} foi removido.`);
     }
   };
 
   const handleToggleStatus = (id) => {
-    setParticipantes((prev) =>
-      prev.map((p) => {
-        if (p.id === id) {
-          const novo = p.status === "Ativo" ? "Inativo" : "Ativo";
-          showToast(`Status alterado para ${novo}.`);
-          return { ...p, status: novo };
-        }
-        return p;
-      })
-    );
+    const atualizada = participantes.map((p) => {
+      if (p.id === id) {
+        const novo = p.status === "Ativo" ? "Inativo" : "Ativo";
+        showToast(`Status alterado para ${novo}.`);
+        return { ...p, status: novo };
+      }
+      return p;
+    });
+    salvarLista(atualizada);
   };
 
   const participantesFiltrados = useMemo(() => {
     return participantes.filter((p) => {
       const termo = busca.toLowerCase();
       const matchBusca =
-        p.nome.toLowerCase().includes(termo) ||
-        p.email.toLowerCase().includes(termo) ||
-        p.instituicao.toLowerCase().includes(termo) ||
-        p.curso.toLowerCase().includes(termo);
+        p.nome?.toLowerCase().includes(termo) ||
+        p.email?.toLowerCase().includes(termo) ||
+        p.instituicao?.toLowerCase().includes(termo) ||
+        p.curso?.toLowerCase().includes(termo);
 
       const matchStatus = filtroStatus === "Todos" || p.status === filtroStatus;
-      const matchNivel = filtroNivel === "Todos" || p.nivel === filtroNivel;
+      const cargo = p.nivel || p.tipo;
+      const matchNivel = filtroNivel === "Todos" || cargo === filtroNivel;
 
       return matchBusca && matchStatus && matchNivel;
     });
@@ -124,8 +144,14 @@ export default function Participantes() {
 
   const total = participantes.length;
   const totalAtivos = participantes.filter((p) => p.status === "Ativo").length;
-  const totalEstudantes = participantes.filter((p) => p.nivel === "Estudante").length;
-  const totalDocentes = participantes.filter((p) => p.nivel === "Professor" || p.nivel === "Administrador").length;
+  const totalEstudantes = participantes.filter(
+    (p) => (p.nivel || p.tipo) === "Estudante"
+  ).length;
+  const totalDocentes = participantes.filter(
+    (p) =>
+      (p.nivel || p.tipo) === "Professor" ||
+      (p.nivel || p.tipo) === "Administrador"
+  ).length;
 
   return (
     <div className="participantes-page">
@@ -277,7 +303,11 @@ export default function Participantes() {
                       </button>
                     </td>
                     <td className="cell-actions">
-                      <Link to="/participantesform" className="btn-table-edit">
+                      <Link
+                        to="/participantesform"
+                        state={{ participante: p }}
+                        className="btn-table-edit"
+                      >
                         <IoPencilOutline className="btn-icon" />
                         <span>Editar</span>
                       </Link>

@@ -78,15 +78,6 @@ function Dashboard() {
             <span>Palestrantes</span>
           </Link>
 
-          <Link to="/inscricoes" className="nav-item">
-            <IoReceiptOutline className="nav-icon" />
-            <span>Inscrições</span>
-          </Link>
-
-          <Link to="/relatorios" className="nav-item">
-            <IoBarChartOutline className="nav-icon" />
-            <span>Relatórios</span>
-          </Link>
           <Link to="/usuarios" className="nav-item">
             <IoShieldCheckmarkOutline className="nav-icon" />
             <span>Usuários</span>
