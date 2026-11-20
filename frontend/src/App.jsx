@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Participantes from "./pages/Participantes";
 import ParticipantesForm from "./pages/ParticipantesForm";
+import Atividades from "./pages/Atividades";
 
 import Palestrantes from "./pages/Palestrantes";
 import PalestrantesForm from "./pages/PalestrantesForm";
@@ -108,7 +109,31 @@ const router = createBrowserRouter([
         <UsuariosForm />
       </RotaPrivada>
     )
-  }
+  },
+{
+  path: "/atividades",
+  element: (
+    <RotaPrivada>
+      <Atividades />
+    </RotaPrivada>
+  )
+},
+{
+  path: "/atividades/disponiveis",
+  element: (
+    <RotaPrivada>
+      <Atividades />
+    </RotaPrivada>
+  )
+},
+{
+  path: "/minhas-atividades",
+  element: (
+    <RotaPrivada>
+      <Atividades />
+    </RotaPrivada>
+  )
+}
 ]);
 
 export default router;
