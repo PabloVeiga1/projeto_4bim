@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   IoArrowBackOutline,
-  IoPersonAddOutline,
   IoCloseOutline,
   IoCheckmarkOutline
 } from "react-icons/io5";
@@ -101,7 +100,6 @@ function ParticipanteForm() {
         <section className="form-card">
           <header className="form-card-header">
             <div className="form-title-row">
-              <IoPersonAddOutline className="form-header-icon" />
               <div>
                 <h2>
                   {participanteEdicao
@@ -115,14 +113,6 @@ function ParticipanteForm() {
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={() => navigate("/participantes")}
-              title="Fechar"
-            >
-              <IoCloseOutline />
-            </button>
           </header>
 
           {success && (
@@ -141,7 +131,7 @@ function ParticipanteForm() {
               <h3>Dados Pessoais</h3>
               <div className="form-grid">
                 <div className="field-group">
-                  <label htmlFor="nome">Nome completo *</label>
+                  <label htmlFor="nome">Nome completo <span style={{color:"red"}}>*</span></label>
                   <input
                     type="text"
                     id="nome"
@@ -154,7 +144,7 @@ function ParticipanteForm() {
                 </div>
 
                 <div className="field-group">
-                  <label htmlFor="cpf">CPF *</label>
+                  <label htmlFor="cpf">CPF <span style={{color:"red"}}>*</span></label>
                   <input
                     type="text"
                     id="cpf"
@@ -167,7 +157,7 @@ function ParticipanteForm() {
                 </div>
 
                 <div className="field-group">
-                  <label htmlFor="email">E-mail *</label>
+                  <label htmlFor="email">E-mail <span style={{color:"red"}}>*</span></label>
                   <input
                     type="email"
                     id="email"
@@ -253,20 +243,10 @@ function ParticipanteForm() {
 
             <div className="form-actions">
               <button
-                type="button"
-                className="btn-cancel"
-                onClick={() => navigate("/participantes")}
-                disabled={isSubmitting}
-              >
-                <IoCloseOutline className="btn-icon" />
-                <span>Cancelar</span>
-              </button>
-              <button
                 type="submit"
                 className="btn-submit"
                 disabled={isSubmitting}
               >
-                <IoCheckmarkOutline className="btn-icon" />
                 <span>
                   {isSubmitting
                     ? "Salvando..."
@@ -274,6 +254,14 @@ function ParticipanteForm() {
                     ? "Salvar Alterações"
                     : "Cadastrar Participante"}
                 </span>
+              </button>
+              <button
+                type="button"
+                className="btn-cancel"
+                onClick={() => navigate("/participantes")}
+                disabled={isSubmitting}
+              >
+                <span>Cancelar</span>
               </button>
             </div>
           </form>

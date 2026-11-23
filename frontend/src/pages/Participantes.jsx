@@ -1,15 +1,5 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  IoPeopleOutline,
-  IoHomeOutline,
-  IoLogOutOutline,
-  IoAddOutline,
-  IoSearchOutline,
-  IoPencilOutline,
-  IoTrashOutline,
-  IoCloseOutline
-} from "react-icons/io5";
 
 import api from "../services/api";
 import "../styles/Participantes.css";
@@ -17,56 +7,12 @@ import "../styles/Participantes.css";
 const STORAGE_KEY = "eventos_ifal_participantes";
 
 const DADOS_INICIAIS = [
-  {
-    id: 1,
-    nome: "Pablo Vinícius",
-    email: "pvcv1@aluno.ifal.edu.br",
-    nivel: "Administrador",
-    instituicao: "IFAL Maceió",
-    curso: "Informática",
-    status: "Ativo"
-  },
-  {
-    id: 2,
-    nome: "João Silva",
-    email: "joao.silva@aluno.ifal.edu.br",
-    nivel: "Estudante",
-    instituicao: "IFAL Arapiraca",
-    curso: "Engenharia",
-    status: "Ativo"
-  },
-  {
-    id: 3,
-    nome: "Maria Oliveira",
-    email: "maria.oliveira@aluno.ifal.edu.br",
-    nivel: "Estudante",
-    instituicao: "IFAL Maceió",
-    curso: "Design",
-    status: "Ativo"
-  },
-  {
-    id: 4,
-    nome: "Carlos Eduardo",
-    email: "carlos.eduardo@ifal.edu.br",
-    nivel: "Professor",
-    instituicao: "IFAL Reitoria",
-    curso: "Docência",
-    status: "Ativo"
-  },
-  {
-    id: 5,
-    nome: "Ana Beatriz Santos",
-    email: "anabeatriz@gmail.com",
-    nivel: "Visitante",
-    instituicao: "UFAL",
-    curso: "Computação",
-    status: "Inativo"
-  }
 ];
 
 export default function Participantes() {
   const [participantes, setParticipantes] = useState(() => {
     const salvos = localStorage.getItem(STORAGE_KEY);
+
     if (salvos) {
       try {
         return JSON.parse(salvos);
@@ -74,6 +20,7 @@ export default function Participantes() {
         console.error("Erro ao carregar participantes salvos:", e);
       }
     }
+
     localStorage.setItem(STORAGE_KEY, JSON.stringify(DADOS_INICIAIS));
     return DADOS_INICIAIS;
   });
@@ -120,21 +67,26 @@ export default function Participantes() {
         showToast(`Status alterado para ${novo}.`);
         return { ...p, status: novo };
       }
+
       return p;
     });
+
     salvarLista(atualizada);
   };
 
   const participantesFiltrados = useMemo(() => {
     return participantes.filter((p) => {
       const termo = busca.toLowerCase();
+
       const matchBusca =
         p.nome?.toLowerCase().includes(termo) ||
         p.email?.toLowerCase().includes(termo) ||
         p.instituicao?.toLowerCase().includes(termo) ||
         p.curso?.toLowerCase().includes(termo);
 
-      const matchStatus = filtroStatus === "Todos" || p.status === filtroStatus;
+      const matchStatus =
+        filtroStatus === "Todos" || p.status === filtroStatus;
+
       const cargo = p.nivel || p.tipo;
       const matchNivel = filtroNivel === "Todos" || cargo === filtroNivel;
 
@@ -143,7 +95,9 @@ export default function Participantes() {
   }, [participantes, busca, filtroStatus, filtroNivel]);
 
   const total = participantes.length;
-  const totalAtivos = participantes.filter((p) => p.status === "Ativo").length;
+  const totalAtivos = participantes.filter(
+    (p) => p.status === "Ativo"
+  ).length;
   const totalEstudantes = participantes.filter(
     (p) => (p.nivel || p.tipo) === "Estudante"
   ).length;
@@ -161,79 +115,73 @@ export default function Participantes() {
         </div>
       )}
 
-      {/* Top Navbar */}
       <nav className="navbar">
         <div className="navbar-content">
           <Link to="/dashboard" className="navbar-logo">
-            <IoPeopleOutline className="logo-icon" />
             <span>Portal de Participantes</span>
           </Link>
+
           <div className="navbar-right">
-            <Link to="/dashboard" className="btn-nav-dashboard">
-              <IoHomeOutline className="btn-icon" />
-              <span>Dashboard</span>
-            </Link>
             <span className="navbar-user">Administrador</span>
+
             <button onClick={handleLogout} className="btn-logout">
-              <IoLogOutOutline className="btn-icon" />
-              <span>Sair</span>
+              Sair
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="content-container">
-        {/* Header */}
         <div className="content-header">
           <div>
             <h1>Participantes</h1>
             <p>Lista e controle de membros cadastrados</p>
           </div>
+
           <Link to="/participantesform" className="btn-primary-action">
-            <IoAddOutline className="btn-icon" />
-            <span>Novo Participante</span>
+            Novo participante +
           </Link>
         </div>
 
-        {/* Stats Grid Minimalista */}
         <div className="stats-row">
           <div className="stat-box">
             <span className="stat-title">Total</span>
             <span className="stat-number">{total}</span>
           </div>
+
           <div className="stat-box">
             <span className="stat-title">Ativos</span>
             <span className="stat-number stat-green">{totalAtivos}</span>
           </div>
+
           <div className="stat-box">
             <span className="stat-title">Estudantes</span>
             <span className="stat-number">{totalEstudantes}</span>
           </div>
+
           <div className="stat-box">
             <span className="stat-title">Docentes / Admins</span>
             <span className="stat-number">{totalDocentes}</span>
           </div>
         </div>
 
-        {/* Filters */}
         <div className="filters-bar">
           <div className="search-wrapper">
-            <IoSearchOutline className="search-icon" />
             <input
               type="text"
-              placeholder="Pesquisar por nome, e-mail, curso..."
+              placeholder="Pesquisar por nome, e-mail ou curso..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
               className="input-search"
             />
+
             {busca && (
               <button
                 type="button"
                 className="btn-clear-search"
                 onClick={() => setBusca("")}
               >
-                <IoCloseOutline />
+                Limpar
               </button>
             )}
           </div>
@@ -263,7 +211,6 @@ export default function Participantes() {
           </div>
         </div>
 
-        {/* Table */}
         <div className="table-wrapper">
           <table className="solid-table">
             <thead>
@@ -277,15 +224,16 @@ export default function Participantes() {
                 <th className="th-actions">Ações</th>
               </tr>
             </thead>
+
             <tbody>
               {participantesFiltrados.length > 0 ? (
                 participantesFiltrados.map((p) => (
                   <tr key={p.id}>
-                    <td className="cell-id">#{p.id}</td>
+                    <td className="cell-id">{p.id}</td>
                     <td className="cell-name">{p.nome}</td>
                     <td className="cell-email">{p.email}</td>
                     <td className="cell-sub">
-                      {p.instituicao} • {p.curso}
+                      {p.instituicao} · {p.curso}
                     </td>
                     <td>
                       <span className="pill-nivel">{p.nivel}</span>
@@ -295,7 +243,9 @@ export default function Participantes() {
                         type="button"
                         onClick={() => handleToggleStatus(p.id)}
                         className={`pill-status ${
-                          p.status === "Ativo" ? "status-ativo" : "status-inativo"
+                          p.status === "Ativo"
+                            ? "status-ativo"
+                            : "status-inativo"
                         }`}
                         title="Alternar status"
                       >
@@ -308,16 +258,15 @@ export default function Participantes() {
                         state={{ participante: p }}
                         className="btn-table-edit"
                       >
-                        <IoPencilOutline className="btn-icon" />
-                        <span>Editar</span>
+                        Editar
                       </Link>
+
                       <button
                         type="button"
                         onClick={() => handleExcluir(p.id, p.nome)}
                         className="btn-table-delete"
                       >
-                        <IoTrashOutline className="btn-icon" />
-                        <span>Excluir</span>
+                        Excluir
                       </button>
                     </td>
                   </tr>
@@ -325,7 +274,8 @@ export default function Participantes() {
               ) : (
                 <tr>
                   <td colSpan="7" className="empty-message">
-                    Nenhum participante encontrado para os critérios selecionados.
+                    Nenhum participante encontrado para os critérios
+                    selecionados.
                   </td>
                 </tr>
               )}
