@@ -4,8 +4,8 @@ USE sistema_eventos;
 CREATE TABLE Usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tipo VARCHAR(50),
-    senha VARCHAR(50),
-    email VARCHAR(150),
+    senha VARCHAR(50) NOT NULL,
+    email VARCHAR(150)NOT NULL,
     nome VARCHAR(150)
 );
 
@@ -150,51 +150,3 @@ VALUES
 (8, 'Pedro Henrique', '111.111.111-08', 'pedro@email.com', '82988880008', 'IFAL', 'Informática', 1, 8),
 (9, 'Mariana Souza', '111.111.111-09', 'mariana@email.com', '82988880009', 'UFAL', 'Ciência da Computação', 2, 9),
 (10, 'Rafael Santos', '111.111.111-10', 'rafael@email.com', '82988880010', 'IFAL', 'Informática', 1, 10);
-
--- Consultas com JOIN --
-SELECT
-    Evento.nome AS evento,
-    Evento.local,
-    Evento.data_inicio,
-    Evento.data_fim,
-    Usuario.nome AS organizador
-FROM Evento
-INNER JOIN Usuario
-    ON Evento.idUsuario = Usuario.id;
-
-
-SELECT
-    Atividade.titulo AS atividade,
-    Atividade.tipo,
-    Evento.nome AS evento,
-    Palestrante.nome AS palestrante,
-    Atividade.carga_horaria
-FROM Atividade
-INNER JOIN Evento
-    ON Atividade.evento_id = Evento.id
-INNER JOIN Palestrante
-    ON Atividade.palestrante_id = Palestrante.id;
-
-
-SELECT
-    Participante.nome AS participante,
-    Participante.curso,
-    Participante.instituicao,
-    Inscricao.data_inscricao,
-    Inscricao.status,
-    Inscricao.presenca
-FROM Participante
-INNER JOIN Inscricao
-    ON Participante.idInscricao = Inscricao.id;
-
--- Consulta com GROUP BY --
-
-SELECT
-    Evento.nome AS evento,
-    COUNT(Atividade.id) AS quantidade_atividades,
-    SUM(Atividade.carga_horaria) AS carga_horaria_total
-FROM Evento
-INNER JOIN Atividade
-    ON Evento.id = Atividade.evento_id
-GROUP BY Evento.id, Evento.nome
-ORDER BY quantidade_atividades DESC;

@@ -14,7 +14,6 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Rotas de autenticação
 app.use("/api/auth", AuthRoutes);
 
 app.get("/", (req, res) => {

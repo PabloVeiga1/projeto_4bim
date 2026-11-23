@@ -2,7 +2,6 @@ import Usuario from "../models/Usuario.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-// Configurações padrão para o cookie seguro httpOnly
 const cookieConfig = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
@@ -11,12 +10,11 @@ const cookieConfig = {
 };
 
 class AuthController {
-  // 1. Cadastro de novo usuário
+
   static async registrar(req, res) {
     try {
       const { nome, email, senha } = req.body;
 
-      // Validação básica dos campos
       if (!nome || !email || !senha) {
         return res.status(400).json({ message: "Preencha todos os campos." });
       }
@@ -25,16 +23,13 @@ class AuthController {
         return res.status(400).json({ message: "A senha deve ter no mínimo 8 caracteres." });
       }
 
-      // Verifica se o e-mail já existe no banco
       const usuarioExistente = await Usuario.buscarPorEmail(email);
       if (usuarioExistente) {
         return res.status(409).json({ message: "Este e-mail já está cadastrado." });
       }
 
-      // Criptografa a senha com bcrypt
       const senhaHash = await bcrypt.hash(senha, 10);
 
-      // Salva o usuário no MySQL
       const id = await Usuario.criar(
         nome.trim(),
         email.trim().toLowerCase(),
@@ -55,7 +50,6 @@ class AuthController {
     }
   }
 
-  // 2. Login de usuário
   static async login(req, res) {
     try {
       const { email, senha, rememberMe } = req.body;
@@ -64,19 +58,16 @@ class AuthController {
         return res.status(400).json({ message: "Informe e-mail e senha." });
       }
 
-      // Busca usuário pelo e-mail
       const usuario = await Usuario.buscarPorEmail(email.trim().toLowerCase());
       if (!usuario) {
         return res.status(401).json({ message: "E-mail ou senha incorretos." });
       }
 
-      // Compara a senha informada com o hash salvo no banco
       const senhaValida = await bcrypt.compare(senha, usuario.senha);
       if (!senhaValida) {
         return res.status(401).json({ message: "E-mail ou senha incorretos." });
       }
 
-      // Gera o token JWT (7 dias se rememberMe estiver ativo, senão 1 dia)
       const tempoExpiracao = rememberMe ? "7d" : "1d";
       const token = jwt.sign(
         { id: usuario.id, email: usuario.email },
@@ -84,7 +75,6 @@ class AuthController {
         { expiresIn: tempoExpiracao }
       );
 
-      // Configura o cookie httpOnly
       const maxAge = rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
       res.cookie("token", token, { ...cookieConfig, maxAge });
 
@@ -102,7 +92,6 @@ class AuthController {
     }
   }
 
-  // 3. Verificação de sessão (para checar se o usuário autenticado é válido)
   static async verificarSessao(req, res) {
     try {
       const usuario = await Usuario.buscarPorId(req.usuario.id);
@@ -120,7 +109,6 @@ class AuthController {
     }
   }
 
-  // 4. Logout (limpar o cookie httpOnly)
   static logout(req, res) {
     res.clearCookie("token", cookieConfig);
     return res.status(200).json({ message: "Logout realizado com sucesso." });
