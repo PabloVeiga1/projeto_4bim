@@ -209,12 +209,12 @@ function Dashboard() {
               <p>Cadastro e gerenciamento de palestrantes convidados.</p>
             </Link>
 
-            <Link to="/relatorios" className="acesso-card">
+            <Link to="/inscricoes" className="acesso-card">
               <div className="card-top-row">
                 <IoBarChartOutline className="card-icon" />
               </div>
-              <h3>Relatórios</h3>
-              <p>Exportação de presença, certificados e dados gerais.</p>
+              <h3>Resumo de inscrições</h3>
+              <p>Consulte inscrições, confirmações e presenças por atividade.</p>
             </Link>
           </div>
         </section>

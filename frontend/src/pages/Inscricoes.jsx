@@ -22,6 +22,7 @@ export default function Inscricoes() {
   const [inscricoes, setInscricoes] = useState([]);
   const [participantes, setParticipantes] = useState([]);
   const [atividades, setAtividades] = useState([]);
+  const [resumo, setResumo] = useState([]);
   const [form, setForm] = useState(novaInscricao);
   const [editandoId, setEditandoId] = useState(null);
   const [erro, setErro] = useState("");
@@ -39,6 +40,7 @@ export default function Inscricoes() {
     setInscricoes(lista);
     setParticipantes(opcoes.participantes);
     setAtividades(opcoes.atividades);
+    setResumo(opcoes.resumo);
   }
 
   useEffect(() => {
@@ -160,7 +162,7 @@ export default function Inscricoes() {
               <option value="">Selecione</option>
               {atividades.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.titulo || `Atividade ${a.id}`} ({a.tipo})
+                  {a.titulo || `Atividade ${a.id}`} ({a.tipo}) — {a.evento}
                 </option>
               ))}
             </select>
@@ -238,6 +240,37 @@ export default function Inscricoes() {
             </table>
           </div>
         )}
+      </section>
+
+      <section className="inscricoes-card">
+        <h2>Resumo por atividade</h2>
+        <div className="inscricoes-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Atividade</th>
+                <th>Evento</th>
+                <th>Inscritos</th>
+                <th>Confirmadas</th>
+                <th>Presentes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {resumo.map((item) => (
+                <tr key={item.atividade_id}>
+                  <td>{item.atividade}</td>
+                  <td>{item.evento}</td>
+                  <td>{item.total}</td>
+                  <td>{item.confirmadas}</td>
+                  <td>{item.presentes}</td>
+                </tr>
+              ))}
+              {!resumo.length && (
+                <tr><td colSpan="5">Nenhuma atividade cadastrada.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </section>
     </main>
   );

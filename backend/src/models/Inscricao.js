@@ -6,10 +6,13 @@ export default class Inscricao {
       `SELECT i.id, DATE_FORMAT(i.data_inscricao, '%Y-%m-%d') AS data_inscricao,
               i.status, i.presenca,
               i.participante_id, p.nome AS participante,
-              i.atividade_id, a.titulo AS atividade
+              i.atividade_id, a.titulo AS atividade, e.nome AS evento,
+              pa.nome AS palestrante
        FROM Inscricao i
        JOIN Participante p ON p.id = i.participante_id
        JOIN Atividade a ON a.id = i.atividade_id
+       JOIN Evento e ON e.id = a.evento_id
+       LEFT JOIN Palestrante pa ON pa.id = a.palestrante_id
        ORDER BY i.id DESC`
     );
     return inscricoes;
@@ -20,15 +23,40 @@ export default class Inscricao {
       "SELECT id, nome FROM Participante ORDER BY nome"
     );
     const [atividades] = await conexao.execute(
-      "SELECT id, titulo, tipo FROM Atividade ORDER BY data, horario_inicio"
+      `SELECT a.id, a.titulo, a.tipo, e.nome AS evento, p.nome AS palestrante
+       FROM Atividade a
+       JOIN Evento e ON e.id = a.evento_id
+       LEFT JOIN Palestrante p ON p.id = a.palestrante_id
+       ORDER BY a.data, a.horario_inicio`
     );
-    return { participantes, atividades };
+
+    const [resumo] = await conexao.execute(
+      `SELECT a.id AS atividade_id, a.titulo AS atividade, e.nome AS evento,
+              COUNT(i.id) AS total,
+              SUM(CASE WHEN i.status = 'Confirmada' THEN 1 ELSE 0 END) AS confirmadas,
+              SUM(CASE WHEN i.presenca = 'Presente' THEN 1 ELSE 0 END) AS presentes
+       FROM Atividade a
+       JOIN Evento e ON e.id = a.evento_id
+       LEFT JOIN Inscricao i ON i.atividade_id = a.id
+       GROUP BY a.id, a.titulo, e.nome
+       ORDER BY e.nome, a.titulo`
+    );
+
+    return { participantes, atividades, resumo };
   }
 
   static async buscarPorId(id) {
     const [inscricoes] = await conexao.execute(
-      `SELECT id, data_inscricao, status, presenca, participante_id, atividade_id
-       FROM Inscricao WHERE id = ?`,
+      `SELECT i.id, DATE_FORMAT(i.data_inscricao, '%Y-%m-%d') AS data_inscricao,
+              i.status, i.presenca, i.participante_id, p.nome AS participante,
+              i.atividade_id, a.titulo AS atividade, e.nome AS evento,
+              pa.nome AS palestrante
+       FROM Inscricao i
+       JOIN Participante p ON p.id = i.participante_id
+       JOIN Atividade a ON a.id = i.atividade_id
+       JOIN Evento e ON e.id = a.evento_id
+       LEFT JOIN Palestrante pa ON pa.id = a.palestrante_id
+       WHERE i.id = ?`,
       [id]
     );
     return inscricoes[0] || null;
