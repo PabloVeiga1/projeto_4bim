@@ -1,6 +1,6 @@
 import conexao from "../config/database.js";
 
-class Usuario {
+export default class Usuario {
   static async buscarPorEmail(email) {
     const [usuarios] = await conexao.execute(
       "SELECT * FROM usuarios WHERE email = ?",
@@ -17,14 +17,12 @@ class Usuario {
     return usuarios[0] || null;
   }
 
-  static async criar(nome, email, senha) {
+  static async criar(nome, email, senha, tipo) {
     const [resultado] = await conexao.execute(
-      `INSERT INTO usuarios (nome, email, senha)
-       VALUES (?, ?, ?)`,
-      [nome, email, senha]
+      `INSERT INTO usuarios (nome, email, senha, tipo)
+       VALUES (?, ?, ?, ?)`,
+      [nome, email, senha, tipo]
     );
     return resultado.insertId;
   }
 }
-
-export default Usuario;

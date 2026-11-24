@@ -73,6 +73,11 @@ function Dashboard() {
             <span>Atividades</span>
           </Link>
 
+          <Link to="/inscricoes" className="nav-item">
+            <IoReceiptOutline className="nav-icon" />
+            <span>Inscrições</span>
+          </Link>
+
           <Link to="/palestrantes" className="nav-item">
             <IoMicOutline className="nav-icon" />
             <span>Palestrantes</span>
@@ -170,6 +175,14 @@ function Dashboard() {
               </div>
               <h3>Novo Participante</h3>
               <p>Cadastrar novo estudante, professor ou visitante.</p>
+            </Link>
+
+            <Link to="/inscricoes" className="acesso-card">
+              <div className="card-top-row">
+                <IoReceiptOutline className="card-icon" />
+              </div>
+              <h3>Inscrições</h3>
+              <p>Cadastre e acompanhe inscrições em atividades.</p>
             </Link>
 
             <Link to="/eventos" className="acesso-card">

@@ -10,7 +10,7 @@ import {
   IoTrashOutline,
   IoCloseOutline
 } from "react-icons/io5";
-import "../styles/Palestrantes.css";
+import "../styles/Participantes.css";
 
 const STORAGE_KEY = "eventos_ifal_palestrantes";
 

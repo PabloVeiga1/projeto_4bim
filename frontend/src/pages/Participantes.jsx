@@ -1,35 +1,50 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import api from "../services/api";
 import "../styles/Participantes.css";
 
-const STORAGE_KEY = "eventos_ifal_participantes";
-
-const DADOS_INICIAIS = [
-];
-
 export default function Participantes() {
-  const [participantes, setParticipantes] = useState(() => {
-    const salvos = localStorage.getItem(STORAGE_KEY);
-
-    if (salvos) {
-      try {
-        return JSON.parse(salvos);
-      } catch (e) {
-        console.error("Erro ao carregar participantes salvos:", e);
-      }
-    }
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DADOS_INICIAIS));
-    return DADOS_INICIAIS;
-  });
+  const [participantes, setParticipantes] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
   const [busca, setBusca] = useState("");
-  const [filtroStatus, setFiltroStatus] = useState("Todos");
   const [filtroNivel, setFiltroNivel] = useState("Todos");
   const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
+
+  const carregarParticipantes = async () => {
+    setCarregando(true);
+    setErro("");
+    try {
+      const lista = await api("/participantes");
+      setParticipantes(lista);
+    } catch (error) {
+      setErro(error.message);
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  useEffect(() => {
+    let ativo = true;
+
+    api("/participantes")
+      .then((lista) => {
+        if (ativo) setParticipantes(lista);
+      })
+      .catch((error) => {
+        if (ativo) setErro(error.message);
+      })
+      .finally(() => {
+        if (ativo) setCarregando(false);
+      });
+
+    return () => {
+      ativo = false;
+    };
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -47,31 +62,16 @@ export default function Participantes() {
     setTimeout(() => setToastMessage(""), 2500);
   };
 
-  const salvarLista = (novaLista) => {
-    setParticipantes(novaLista);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(novaLista));
-  };
-
-  const handleExcluir = (id, nome) => {
+  const handleExcluir = async (id, nome) => {
     if (window.confirm(`Deseja remover o participante ${nome}?`)) {
-      const atualizada = participantes.filter((p) => p.id !== id);
-      salvarLista(atualizada);
-      showToast(`Participante ${nome} foi removido.`);
-    }
-  };
-
-  const handleToggleStatus = (id) => {
-    const atualizada = participantes.map((p) => {
-      if (p.id === id) {
-        const novo = p.status === "Ativo" ? "Inativo" : "Ativo";
-        showToast(`Status alterado para ${novo}.`);
-        return { ...p, status: novo };
+      try {
+        await api(`/participantes/${id}`, { method: "DELETE" });
+        setParticipantes((atual) => atual.filter((p) => p.id !== id));
+        showToast(`Participante ${nome} foi removido.`);
+      } catch (error) {
+        showToast(error.message);
       }
-
-      return p;
-    });
-
-    salvarLista(atualizada);
+    }
   };
 
   const participantesFiltrados = useMemo(() => {
@@ -84,27 +84,18 @@ export default function Participantes() {
         p.instituicao?.toLowerCase().includes(termo) ||
         p.curso?.toLowerCase().includes(termo);
 
-      const matchStatus =
-        filtroStatus === "Todos" || p.status === filtroStatus;
+      const matchNivel = filtroNivel === "Todos" || String(p.tipo) === filtroNivel;
 
-      const cargo = p.nivel || p.tipo;
-      const matchNivel = filtroNivel === "Todos" || cargo === filtroNivel;
-
-      return matchBusca && matchStatus && matchNivel;
+      return matchBusca && matchNivel;
     });
-  }, [participantes, busca, filtroStatus, filtroNivel]);
+  }, [participantes, busca, filtroNivel]);
 
   const total = participantes.length;
-  const totalAtivos = participantes.filter(
-    (p) => p.status === "Ativo"
-  ).length;
   const totalEstudantes = participantes.filter(
-    (p) => (p.nivel || p.tipo) === "Estudante"
+    (p) => Number(p.tipo) === 1
   ).length;
   const totalDocentes = participantes.filter(
-    (p) =>
-      (p.nivel || p.tipo) === "Professor" ||
-      (p.nivel || p.tipo) === "Administrador"
+    (p) => Number(p.tipo) === 2
   ).length;
 
   return (
@@ -150,17 +141,12 @@ export default function Participantes() {
           </div>
 
           <div className="stat-box">
-            <span className="stat-title">Ativos</span>
-            <span className="stat-number stat-green">{totalAtivos}</span>
-          </div>
-
-          <div className="stat-box">
             <span className="stat-title">Estudantes</span>
             <span className="stat-number">{totalEstudantes}</span>
           </div>
 
           <div className="stat-box">
-            <span className="stat-title">Docentes / Admins</span>
+            <span className="stat-title">Professores</span>
             <span className="stat-number">{totalDocentes}</span>
           </div>
         </div>
@@ -188,25 +174,13 @@ export default function Participantes() {
 
           <div className="selects-row">
             <select
-              value={filtroStatus}
-              onChange={(e) => setFiltroStatus(e.target.value)}
-              className="select-filter"
-            >
-              <option value="Todos">Status: Todos</option>
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
-            </select>
-
-            <select
               value={filtroNivel}
               onChange={(e) => setFiltroNivel(e.target.value)}
               className="select-filter"
             >
-              <option value="Todos">Cargo: Todos</option>
-              <option value="Administrador">Administrador</option>
-              <option value="Estudante">Estudante</option>
-              <option value="Professor">Professor</option>
-              <option value="Visitante">Visitante</option>
+              <option value="Todos">Tipo: Todos</option>
+              <option value="1">Estudante</option>
+              <option value="2">Professor</option>
             </select>
           </div>
         </div>
@@ -219,14 +193,24 @@ export default function Participantes() {
                 <th>Nome</th>
                 <th>E-mail</th>
                 <th>Instituição</th>
-                <th>Nível</th>
-                <th>Status</th>
+                <th>Tipo</th>
                 <th className="th-actions">Ações</th>
               </tr>
             </thead>
 
             <tbody>
-              {participantesFiltrados.length > 0 ? (
+              {carregando ? (
+                <tr>
+                  <td colSpan="6" className="empty-message">Carregando participantes...</td>
+                </tr>
+              ) : erro ? (
+                <tr>
+                  <td colSpan="6" className="empty-message">
+                    {erro}{" "}
+                    <button type="button" onClick={carregarParticipantes}>Tentar novamente</button>
+                  </td>
+                </tr>
+              ) : participantesFiltrados.length > 0 ? (
                 participantesFiltrados.map((p) => (
                   <tr key={p.id}>
                     <td className="cell-id">{p.id}</td>
@@ -236,21 +220,9 @@ export default function Participantes() {
                       {p.instituicao} · {p.curso}
                     </td>
                     <td>
-                      <span className="pill-nivel">{p.nivel}</span>
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleStatus(p.id)}
-                        className={`pill-status ${
-                          p.status === "Ativo"
-                            ? "status-ativo"
-                            : "status-inativo"
-                        }`}
-                        title="Alternar status"
-                      >
-                        {p.status}
-                      </button>
+                      <span className="pill-nivel">
+                        {Number(p.tipo) === 1 ? "Estudante" : Number(p.tipo) === 2 ? "Professor" : `Tipo ${p.tipo}`}
+                      </span>
                     </td>
                     <td className="cell-actions">
                       <Link
@@ -273,7 +245,7 @@ export default function Participantes() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="empty-message">
+                  <td colSpan="6" className="empty-message">
                     Nenhum participante encontrado para os critérios
                     selecionados.
                   </td>

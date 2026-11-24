@@ -1,28 +1,31 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+{/*Importacao dos icones*/}
 import {
   IoMailOutline,
   IoLockClosedOutline,
   IoEyeOutline,
   IoEyeOffOutline,
-  IoLogInOutline
 } from "react-icons/io5";
 
+{/*Importacao do cliente da API para evitar buscas grandes*/}
+
 import api from "../services/api";
+
 import "../styles/Login.css";
 
-function Login() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-
+  {/*Função para lidar com o envio do formulário de login*/}
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -34,8 +37,7 @@ function Login() {
         method: "POST",
         body: JSON.stringify({
           email,
-          senha: password,
-          rememberMe
+          senha: password
         })
       });
       navigate("/dashboard");
@@ -111,15 +113,6 @@ function Login() {
           </div>
 
           <div className="form-options">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-              <span>Lembrar de mim</span>
-            </label>
-
             <Link to="/recuperar-senha" className="forgot-link">
               Esqueceu a senha?
             </Link>
@@ -136,7 +129,6 @@ function Login() {
             className="btn-solid-primary"
             disabled={loading}
           >
-            <IoLogInOutline className="btn-icon" />
             <span>
               {loading ? "Entrando..." : "Entrar"}
             </span>
@@ -158,5 +150,3 @@ function Login() {
     </div>
   );
 }
-
-export default Login;

@@ -1,27 +1,26 @@
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import AuthRoutes from "./routes/AuthRoutes.js";
+import ParticipanteRoutes from "./routes/ParticipanteRoutes.js";
+import InscricaoRoutes from "./routes/InscricaoRoutes.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-import app from "./app.js";
-import conexao from "./config/database.js";
+const app = express();
 
-const PORT = process.env.PORT || 3000;
+app.use(express.json());
+app.use(cookieParser());
 
-async function iniciarServidor() {
-  try {
-    const connection = await conexao.getConnection();
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3001",
+  credentials: true
+}));
 
-    console.log("MySQL conectado com sucesso!");
+app.use("/api/auth", AuthRoutes);
+app.use("/api/participantes", ParticipanteRoutes);
+app.use("/api/inscricoes", InscricaoRoutes);
 
-    connection.release();
-
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando em http://localhost:${PORT}`);
-    });
-
-  } catch (error) {
-    console.error("Erro ao conectar com MySQL:", error.message);
-    process.exit(1);
-  }
-}
-
-iniciarServidor();
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Servidor rodando em http://localhost:${process.env.PORT || 3000}`);
+});

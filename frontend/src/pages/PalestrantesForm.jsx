@@ -6,7 +6,7 @@ import {
   IoCloseOutline,
   IoCheckmarkOutline
 } from "react-icons/io5";
-import "../styles/PalestrantesForm.css";
+import "../styles/ParticipantesForm.css";
 
 const STORAGE_KEY = "eventos_ifal_palestrantes";
 

@@ -1,12 +1,16 @@
-CREATE DATABASE IF NOT EXISTS sistema_eventos;
-USE sistema_eventos;
+DROP DATABASE IF EXISTS sistema_login;
 
-CREATE TABLE Usuario (
+CREATE DATABASE sistema_login;
+
+USE sistema_login;
+
+CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    tipo VARCHAR(50),
-    senha VARCHAR(50) NOT NULL,
-    email VARCHAR(150)NOT NULL,
-    nome VARCHAR(150)
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    senha VARCHAR(255) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Palestrante (
@@ -28,33 +32,7 @@ CREATE TABLE Evento (
     data_inicio DATE,
     data_fim DATE,
     idUsuario INT,
-    FOREIGN KEY (idUsuario) REFERENCES Usuario(id)
-);
-
-CREATE TABLE Inscricao (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    data_inscricao DATE,
-    status VARCHAR(50),
-    presenca VARCHAR(50)
-);
-
-CREATE TABLE Atividade (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    descricao TEXT,
-    tipo VARCHAR(50),
-    titulo VARCHAR(150),
-    carga_horaria INT,
-    vagas INT,
-    data DATETIME,
-    horario_inicio TIME,
-    horario_fim TIME,
-    sala VARCHAR(100),
-    evento_id INT,
-    palestrante_id INT,
-    idInscricao INT,
-    FOREIGN KEY (evento_id) REFERENCES Evento(id),
-    FOREIGN KEY (palestrante_id) REFERENCES Palestrante(id),
-    FOREIGN KEY (idInscricao) REFERENCES Inscricao(id)
+    FOREIGN KEY (idUsuario) REFERENCES usuarios(id)
 );
 
 CREATE TABLE Participante (
@@ -65,12 +43,42 @@ CREATE TABLE Participante (
     telefone VARCHAR(20),
     instituicao VARCHAR(150),
     curso VARCHAR(150),
-    tipo INT,
-    idInscricao INT,
-    FOREIGN KEY (idInscricao) REFERENCES Inscricao(id)
+    tipo INT
 );
 
-INSERT INTO Usuario (id, tipo, senha, email, nome) VALUES
+CREATE TABLE Atividade (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    descricao TEXT,
+    tipo ENUM('Palestra', 'Minicurso') NOT NULL,
+    titulo VARCHAR(150),
+    carga_horaria INT,
+    vagas INT,
+    data DATETIME,
+    horario_inicio TIME,
+    horario_fim TIME,
+    sala VARCHAR(100),
+    evento_id INT,
+    palestrante_id INT,
+
+    FOREIGN KEY (evento_id) REFERENCES Evento(id),
+    FOREIGN KEY (palestrante_id) REFERENCES Palestrante(id)
+);
+
+CREATE TABLE Inscricao (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data_inscricao DATE,
+    status VARCHAR(50),
+    presenca VARCHAR(50),
+    participante_id INT,
+    atividade_id INT,
+
+    FOREIGN KEY (participante_id) REFERENCES Participante(id),
+    FOREIGN KEY (atividade_id) REFERENCES Atividade(id),
+
+    UNIQUE (participante_id, atividade_id)
+);
+
+INSERT INTO usuarios (id, tipo, senha, email, nome) VALUES
 (1, 'Administrador', 'admin123', 'admin@evento.com', 'Carlos Silva'),
 (2, 'Organizador', 'org123', 'ana@evento.com', 'Ana Souza'),
 (3, 'Organizador', 'org123', 'pedro@evento.com', 'Pedro Santos'),
@@ -110,43 +118,44 @@ VALUES
 (9, 'Simpósio de Design', 'Design e experiência do usuário.', 'Sala 10', 'Aberto', '2026-12-15', '2026-12-15', 2),
 (10, 'Mostra de Robótica', 'Exposição de projetos de robótica.', 'Ginásio IFAL', 'Planejado', '2026-12-18', '2026-12-19', 4);
 
-INSERT INTO Inscricao (id, data_inscricao, status, presenca) VALUES
-(1, '2026-11-10', 'Confirmada', 'Presente'),
-(2, '2026-11-10', 'Confirmada', 'Presente'),
-(3, '2026-11-11', 'Confirmada', 'Ausente'),
-(4, '2026-11-11', 'Pendente', 'Não informado'),
-(5, '2026-11-12', 'Confirmada', 'Presente'),
-(6, '2026-11-12', 'Confirmada', 'Presente'),
-(7, '2026-11-13', 'Cancelada', 'Não informado'),
-(8, '2026-11-13', 'Confirmada', 'Ausente'),
-(9, '2026-11-14', 'Confirmada', 'Presente'),
-(10, '2026-11-14', 'Pendente', 'Não informado');
+INSERT INTO Participante
+(id, nome, cpf, email, telefone, instituicao, curso, tipo)
+VALUES
+(1, 'João Lima', '111.111.111-01', 'joao@email.com', '82988880001', 'IFAL', 'Informática', 1),
+(2, 'Lucas Costa', '111.111.111-02', 'lucas@email.com', '82988880002', 'IFAL', 'Sistemas de Informação', 1),
+(3, 'Beatriz Alves', '111.111.111-03', 'beatriz@email.com', '82988880003', 'UFAL', 'Ciência da Computação', 2),
+(4, 'Marcos Rocha', '111.111.111-04', 'marcos@email.com', '82988880004', 'IFAL', 'Informática', 1),
+(5, 'Júlia Martins', '111.111.111-05', 'julia@email.com', '82988880005', 'UFAL', 'Engenharia de Computação', 2),
+(6, 'Gabriel Ferreira', '111.111.111-06', 'gabriel@email.com', '82988880006', 'IFAL', 'Informática', 1),
+(7, 'Ana Clara', '111.111.111-07', 'anaclara@email.com', '82988880007', 'CESMAC', 'Sistemas de Informação', 2),
+(8, 'Pedro Henrique', '111.111.111-08', 'pedro@email.com', '82988880008', 'IFAL', 'Informática', 1),
+(9, 'Mariana Souza', '111.111.111-09', 'mariana@email.com', '82988880009', 'UFAL', 'Ciência da Computação', 2),
+(10, 'Rafael Santos', '111.111.111-10', 'rafael@email.com', '82988880010', 'IFAL', 'Informática', 1);
 
 INSERT INTO Atividade
 (id, descricao, tipo, titulo, carga_horaria, vagas, data,
- horario_inicio, horario_fim, sala, evento_id, palestrante_id, idInscricao)
+ horario_inicio, horario_fim, sala, evento_id, palestrante_id)
 VALUES
-(1, 'Introdução ao desenvolvimento web.', 'Palestra', 'Desenvolvimento Web', 2, 50, '2026-11-20 09:00:00', '09:00:00', '11:00:00', 'Auditório 1', 1, 1, 1),
-(2, 'Fundamentos de inteligência artificial.', 'Palestra', 'Introdução à IA', 2, 40, '2026-11-20 14:00:00', '14:00:00', '16:00:00', 'Auditório 1', 1, 2, 2),
-(3, 'Aprendendo consultas SQL.', 'Workshop', 'Banco de Dados na Prática', 3, 30, '2026-11-23 09:00:00', '09:00:00', '12:00:00', 'Laboratório 1', 2, 3, 3),
-(4, 'Conceitos de segurança digital.', 'Palestra', 'Segurança da Informação', 2, 50, '2026-11-25 10:00:00', '10:00:00', '12:00:00', 'Auditório Central', 3, 4, 4),
-(5, 'Configuração de redes.', 'Workshop', 'Redes de Computadores', 3, 25, '2026-12-05 09:00:00', '09:00:00', '12:00:00', 'Laboratório 3', 5, 5, 5),
-(6, 'Criação de interfaces modernas.', 'Workshop', 'UX e UI Design', 2, 30, '2026-12-08 14:00:00', '14:00:00', '16:00:00', 'Sala 10', 6, 6, 6),
-(7, 'Programação utilizando Python.', 'Palestra', 'Python para Iniciantes', 2, 40, '2026-12-10 09:00:00', '09:00:00', '11:00:00', 'Auditório 2', 7, 7, 7),
-(8, 'Análise e visualização de dados.', 'Workshop', 'Ciência de Dados', 3, 25, '2026-12-12 13:00:00', '13:00:00', '16:00:00', 'Laboratório 2', 8, 8, 8),
-(9, 'Desenvolvimento de aplicativos.', 'Palestra', 'Desenvolvimento Mobile', 2, 50, '2026-12-15 09:00:00', '09:00:00', '11:00:00', 'Sala 10', 9, 9, 9),
-(10, 'Construção de robôs.', 'Workshop', 'Robótica na Prática', 4, 20, '2026-12-18 08:00:00', '08:00:00', '12:00:00', 'Ginásio IFAL', 10, 10, 10);
+(1, 'Introdução ao desenvolvimento web.', 'Palestra', 'Desenvolvimento Web', 2, 50, '2026-11-20 09:00:00', '09:00:00', '11:00:00', 'Auditório 1', 1, 1),
+(2, 'Fundamentos de inteligência artificial.', 'Palestra', 'Introdução à IA', 2, 40, '2026-11-20 14:00:00', '14:00:00', '16:00:00', 'Auditório 1', 1, 2),
+(3, 'Aprendendo consultas SQL.', 'Minicurso', 'Banco de Dados na Prática', 3, 30, '2026-11-23 09:00:00', '09:00:00', '12:00:00', 'Laboratório 1', 2, 3),
+(4, 'Conceitos de segurança digital.', 'Palestra', 'Segurança da Informação', 2, 50, '2026-11-25 10:00:00', '10:00:00', '12:00:00', 'Auditório Central', 3, 4),
+(5, 'Configuração de redes.', 'Minicurso', 'Redes de Computadores', 3, 25, '2026-12-05 09:00:00', '09:00:00', '12:00:00', 'Laboratório 3', 5, 5),
+(6, 'Criação de interfaces modernas.', 'Minicurso', 'UX e UI Design', 2, 30, '2026-12-08 14:00:00', '14:00:00', '16:00:00', 'Sala 10', 6, 6),
+(7, 'Programação utilizando Python.', 'Palestra', 'Python para Iniciantes', 2, 40, '2026-12-10 09:00:00', '09:00:00', '11:00:00', 'Auditório 2', 7, 7),
+(8, 'Análise e visualização de dados.', 'Minicurso', 'Ciência de Dados', 3, 25, '2026-12-12 13:00:00', '13:00:00', '16:00:00', 'Laboratório 2', 8, 8),
+(9, 'Desenvolvimento de aplicativos.', 'Palestra', 'Desenvolvimento Mobile', 2, 50, '2026-12-15 09:00:00', '09:00:00', '11:00:00', 'Sala 10', 9, 9),
+(10, 'Construção de robôs.', 'Minicurso', 'Robótica na Prática', 4, 20, '2026-12-18 08:00:00', '08:00:00', '12:00:00', 'Ginásio IFAL', 10, 10);
 
-INSERT INTO Participante
-(id, nome, cpf, email, telefone, instituicao, curso, tipo, idInscricao)
-VALUES
-(1, 'João Lima', '111.111.111-01', 'joao@email.com', '82988880001', 'IFAL', 'Informática', 1, 1),
-(2, 'Lucas Costa', '111.111.111-02', 'lucas@email.com', '82988880002', 'IFAL', 'Sistemas de Informação', 1, 2),
-(3, 'Beatriz Alves', '111.111.111-03', 'beatriz@email.com', '82988880003', 'UFAL', 'Ciência da Computação', 2, 3),
-(4, 'Marcos Rocha', '111.111.111-04', 'marcos@email.com', '82988880004', 'IFAL', 'Informática', 1, 4),
-(5, 'Júlia Martins', '111.111.111-05', 'julia@email.com', '82988880005', 'UFAL', 'Engenharia de Computação', 2, 5),
-(6, 'Gabriel Ferreira', '111.111.111-06', 'gabriel@email.com', '82988880006', 'IFAL', 'Informática', 1, 6),
-(7, 'Ana Clara', '111.111.111-07', 'anaclara@email.com', '82988880007', 'CESMAC', 'Sistemas de Informação', 2, 7),
-(8, 'Pedro Henrique', '111.111.111-08', 'pedro@email.com', '82988880008', 'IFAL', 'Informática', 1, 8),
-(9, 'Mariana Souza', '111.111.111-09', 'mariana@email.com', '82988880009', 'UFAL', 'Ciência da Computação', 2, 9),
-(10, 'Rafael Santos', '111.111.111-10', 'rafael@email.com', '82988880010', 'IFAL', 'Informática', 1, 10);
+
+SELECT * FROM usuarios;
+
+SELECT * FROM Palestrante;
+
+SELECT * FROM Evento;
+
+SELECT * FROM Participante;
+
+SELECT * FROM Atividade;
+
+SELECT * FROM Inscricao;

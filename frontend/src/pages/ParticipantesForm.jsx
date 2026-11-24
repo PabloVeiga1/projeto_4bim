@@ -2,12 +2,10 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   IoArrowBackOutline,
-  IoCloseOutline,
   IoCheckmarkOutline
 } from "react-icons/io5";
+import api from "../services/api";
 import "../styles/ParticipantesForm.css";
-
-const STORAGE_KEY = "eventos_ifal_participantes";
 
 function ParticipanteForm() {
   const navigate = useNavigate();
@@ -21,13 +19,13 @@ function ParticipanteForm() {
     telefone: participanteEdicao?.telefone || "",
     instituicao: participanteEdicao?.instituicao || "IFAL Maceió",
     curso: participanteEdicao?.curso || "",
-    tipo: participanteEdicao?.nivel || participanteEdicao?.tipo || "Estudante",
-    status: participanteEdicao?.status || "Ativo",
+    tipo: String(participanteEdicao?.tipo ?? 1),
     termos: Boolean(participanteEdicao)
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submissionError, setSubmissionError] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -37,7 +35,7 @@ function ParticipanteForm() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.termos) {
       alert("Por favor, confirme que as informações estão corretas.");
@@ -45,44 +43,37 @@ function ParticipanteForm() {
     }
 
     setIsSubmitting(true);
+    setSubmissionError("");
 
-    setTimeout(() => {
-      const salvos = JSON.parse(
-        localStorage.getItem(STORAGE_KEY) || "[]"
+    const payload = {
+      nome: formData.nome.trim(),
+      cpf: formData.cpf.trim(),
+      email: formData.email.trim(),
+      telefone: formData.telefone.trim(),
+      instituicao: formData.instituicao.trim(),
+      curso: formData.curso.trim(),
+      tipo: Number(formData.tipo)
+    };
+
+    try {
+      await api(
+        participanteEdicao
+          ? `/participantes/${participanteEdicao.id}`
+          : "/participantes",
+        {
+          method: participanteEdicao ? "PUT" : "POST",
+          body: JSON.stringify(payload)
+        }
       );
-      const { termos, ...dados } = formData;
-      const participanteFormatado = {
-        ...dados,
-        nivel: dados.tipo
-      };
-
-      let novaLista;
-      if (participanteEdicao) {
-        novaLista = salvos.map((item) =>
-          item.id === participanteEdicao.id
-            ? { ...item, ...participanteFormatado }
-            : item
-        );
-      } else {
-        const novoId =
-          salvos.length > 0 ? Math.max(...salvos.map((i) => i.id)) + 1 : 1;
-        novaLista = [
-          ...salvos,
-          {
-            id: novoId,
-            ...participanteFormatado
-          }
-        ];
-      }
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(novaLista));
-      setIsSubmitting(false);
       setSuccess(true);
-
       setTimeout(() => {
         navigate("/participantes");
       }, 700);
-    }, 350);
+    } catch (error) {
+      setSubmissionError(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -123,6 +114,12 @@ function ParticipanteForm() {
                   ? "Participante atualizado com sucesso! Redirecionando..."
                   : "Participante cadastrado com sucesso! Redirecionando..."}
               </span>
+            </div>
+          )}
+
+          {submissionError && (
+            <div className="alert-error-box" role="alert">
+              {submissionError}
             </div>
           )}
 
@@ -218,11 +215,8 @@ function ParticipanteForm() {
                     value={formData.tipo}
                     onChange={handleChange}
                   >
-                    <option value="Estudante">Estudante</option>
-                    <option value="Professor">Professor</option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="Profissional">Profissional</option>
-                    <option value="Visitante">Visitante</option>
+                    <option value="1">Estudante</option>
+                    <option value="2">Professor</option>
                   </select>
                 </div>
               </div>

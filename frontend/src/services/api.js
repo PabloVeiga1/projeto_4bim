@@ -12,9 +12,7 @@ const api = async (endpoint, options = {}) => {
     );
 
     const texto = await response.text();
-
     let data = {};
-
     if (texto) {
         try {
             data = JSON.parse(texto);
@@ -24,13 +22,11 @@ const api = async (endpoint, options = {}) => {
             );
         }
     }
-
     if (!response.ok) {
         throw new Error(
             data.message || `Erro na requisição (${response.status}).`
         );
     }
-
     return data;
 };
 
