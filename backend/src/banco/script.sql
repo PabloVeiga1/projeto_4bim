@@ -79,16 +79,16 @@ CREATE TABLE Inscricao (
 );
 
 INSERT INTO usuarios (id, tipo, senha, email, nome) VALUES
-(1, 'Administrador', 'admin123', 'admin@evento.com', 'Carlos Silva'),
-(2, 'Organizador', 'org123', 'ana@evento.com', 'Ana Souza'),
-(3, 'Organizador', 'org123', 'pedro@evento.com', 'Pedro Santos'),
-(4, 'Organizador', 'org123', 'maria@evento.com', 'Maria Oliveira'),
-(5, 'Participante', '123456', 'joao@email.com', 'João Lima'),
-(6, 'Participante', '123456', 'lucas@email.com', 'Lucas Costa'),
-(7, 'Participante', '123456', 'beatriz@email.com', 'Beatriz Alves'),
-(8, 'Participante', '123456', 'marcos@email.com', 'Marcos Rocha'),
-(9, 'Participante', '123456', 'julia@email.com', 'Júlia Martins'),
-(10, 'Participante', '123456', 'gabriel@email.com', 'Gabriel Ferreira');
+(1, 'Administrador', '$2b$10$Qh4v2bgBLSLVdFOK2TxrPey/qceKRGrfNyb0VQvwRwVqsNNCSfy76', 'admin@evento.com', 'Carlos Silva'),
+(2, 'Organizador', '$2b$10$Od7XVE6JhnMDTlk7oPImB.7.GWApNFkPwSyFubaP5lr5jc28XL.bu', 'ana@evento.com', 'Ana Souza'),
+(3, 'Organizador', '$2b$10$Od7XVE6JhnMDTlk7oPImB.7.GWApNFkPwSyFubaP5lr5jc28XL.bu', 'pedro@evento.com', 'Pedro Santos'),
+(4, 'Organizador', '$2b$10$Od7XVE6JhnMDTlk7oPImB.7.GWApNFkPwSyFubaP5lr5jc28XL.bu', 'maria@evento.com', 'Maria Oliveira'),
+(5, 'Participante', '$2b$10$NK5dxeGA75yVcQVk5QmyI.pnxtObAlXOMdtbzkhqEmhogw2zWwdGO', 'joao@email.com', 'João Lima'),
+(6, 'Participante', '$2b$10$NK5dxeGA75yVcQVk5QmyI.pnxtObAlXOMdtbzkhqEmhogw2zWwdGO', 'lucas@email.com', 'Lucas Costa'),
+(7, 'Participante', '$2b$10$NK5dxeGA75yVcQVk5QmyI.pnxtObAlXOMdtbzkhqEmhogw2zWwdGO', 'beatriz@email.com', 'Beatriz Alves'),
+(8, 'Participante', '$2b$10$NK5dxeGA75yVcQVk5QmyI.pnxtObAlXOMdtbzkhqEmhogw2zWwdGO', 'marcos@email.com', 'Marcos Rocha'),
+(9, 'Participante', '$2b$10$NK5dxeGA75yVcQVk5QmyI.pnxtObAlXOMdtbzkhqEmhogw2zWwdGO', 'julia@email.com', 'Júlia Martins'),
+(10, 'Participante', '$2b$10$NK5dxeGA75yVcQVk5QmyI.pnxtObAlXOMdtbzkhqEmhogw2zWwdGO', 'gabriel@email.com', 'Gabriel Ferreira');
 
 INSERT INTO Palestrante
 (id, nome, email, telefone, instituicao, especialidade, mini_biografia)

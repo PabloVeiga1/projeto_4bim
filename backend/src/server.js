@@ -33,6 +33,6 @@ app.use("/api/atividades", AtividadeRoutes);
 app.use("/api/palestrantes", PalestranteRoutes);
 app.use("/api/usuarios", UsuarioRoutes);
 
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`Servidor rodando em http://localhost:${process.env.PORT || 3001}`);
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Servidor rodando em http://localhost:${process.env.PORT || 3000}`);
 });
