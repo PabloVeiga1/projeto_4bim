@@ -1,6 +1,15 @@
 import conexao from "../config/database.js";
 
 export default class Usuario {
+  static async listar() {
+    const [usuarios] = await conexao.execute(
+      `SELECT id, nome, email, tipo, criado_em
+       FROM usuarios
+       ORDER BY id DESC`
+    );
+    return usuarios;
+  }
+
   static async buscarPorEmail(email) {
     const [usuarios] = await conexao.execute(
       "SELECT * FROM usuarios WHERE email = ?",
@@ -8,10 +17,10 @@ export default class Usuario {
     );
     return usuarios[0] || null;
   }
-  
+
   static async buscarPorId(id) {
     const [usuarios] = await conexao.execute(
-      "SELECT id, nome, email, criado_em FROM usuarios WHERE id = ?",
+      "SELECT id, nome, email, tipo, criado_em FROM usuarios WHERE id = ?",
       [id]
     );
     return usuarios[0] || null;
@@ -24,5 +33,33 @@ export default class Usuario {
       [nome, email, senha, tipo]
     );
     return resultado.insertId;
+  }
+
+  static async atualizar(id, { nome, email, tipo, senhaHash }) {
+    if (senhaHash) {
+      const [resultado] = await conexao.execute(
+        `UPDATE usuarios
+         SET nome = ?, email = ?, tipo = ?, senha = ?
+         WHERE id = ?`,
+        [nome, email, tipo, senhaHash, id]
+      );
+      return resultado.affectedRows > 0;
+    }
+
+    const [resultado] = await conexao.execute(
+      `UPDATE usuarios
+       SET nome = ?, email = ?, tipo = ?
+       WHERE id = ?`,
+      [nome, email, tipo, id]
+    );
+    return resultado.affectedRows > 0;
+  }
+
+  static async excluir(id) {
+    const [resultado] = await conexao.execute(
+      "DELETE FROM usuarios WHERE id = ?",
+      [id]
+    );
+    return resultado.affectedRows > 0;
   }
 }

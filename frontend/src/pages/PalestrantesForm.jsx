@@ -6,9 +6,8 @@ import {
   IoCloseOutline,
   IoCheckmarkOutline
 } from "react-icons/io5";
-import "../styles/ParticipantesForm.css";
-
-const STORAGE_KEY = "eventos_ifal_palestrantes";
+import { apiRequest } from "../services/api";
+import "../styles/PalestrantesForm.css";
 
 function PalestrantesForm() {
   const navigate = useNavigate();
@@ -19,14 +18,13 @@ function PalestrantesForm() {
     nome: palestranteEdicao?.nome || "",
     email: palestranteEdicao?.email || "",
     telefone: palestranteEdicao?.telefone || "",
-    instituicao: palestranteEdicao?.instituicao || "IFAL Maceió",
+    instituicao: palestranteEdicao?.instituicao || "IFAL",
     especialidade: palestranteEdicao?.especialidade || "",
-    titulacao: palestranteEdicao?.titulacao || "Especialista",
-    bio: palestranteEdicao?.bio || "",
-    status: palestranteEdicao?.status || "Ativo",
+    mini_biografia: palestranteEdicao?.mini_biografia || "",
     termos: Boolean(palestranteEdicao)
   });
 
+  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -36,42 +34,50 @@ function PalestrantesForm() {
       ...prev,
       [name]: type === "checkbox" ? checked : value
     }));
+    if (error) setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.termos) {
-      alert("Por favor, confirme que as informações estão corretas.");
+      setError("Por favor, confirme que as informações estão corretas.");
       return;
     }
 
     setIsSubmitting(true);
+    setError("");
 
-    setTimeout(() => {
-      const atuais = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      const { termos, ...dadosPalestrante } = formData;
+    try {
+      const payload = {
+        nome: formData.nome,
+        email: formData.email,
+        telefone: formData.telefone,
+        instituicao: formData.instituicao,
+        especialidade: formData.especialidade,
+        mini_biografia: formData.mini_biografia
+      };
 
-      let novaLista;
       if (palestranteEdicao) {
-        novaLista = atuais.map((item) =>
-          item.id === palestranteEdicao.id
-            ? { ...item, ...dadosPalestrante }
-            : item
-        );
+        await apiRequest(`/palestrantes/${palestranteEdicao.id}`, {
+          method: "PUT",
+          body: JSON.stringify(payload)
+        });
       } else {
-        const novoId =
-          atuais.length > 0 ? Math.max(...atuais.map((i) => i.id)) + 1 : 1;
-        novaLista = [...atuais, { id: novoId, ...dadosPalestrante }];
+        await apiRequest("/palestrantes", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
       }
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(novaLista));
-      setIsSubmitting(false);
       setSuccess(true);
-
       setTimeout(() => {
         navigate("/palestrantes");
       }, 800);
-    }, 400);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -96,7 +102,7 @@ function PalestrantesForm() {
                 </h2>
                 <p>
                   {palestranteEdicao
-                    ? "Atualize os dados do palestrante selecionado"
+                    ? "Atualize os dados do palestrante no banco de dados"
                     : "Cadastre as informações do palestrante convidado"}
                 </p>
               </div>
@@ -110,6 +116,12 @@ function PalestrantesForm() {
               <IoCloseOutline />
             </button>
           </header>
+
+          {error && (
+            <div className="alert-error-box">
+              <span>{error}</span>
+            </div>
+          )}
 
           {success && (
             <div className="alert-success">
@@ -132,7 +144,7 @@ function PalestrantesForm() {
                     type="text"
                     id="nome"
                     name="nome"
-                    placeholder="Ex: Dr. Ricardo Almeida"
+                    placeholder="Ex: Fernanda Lima"
                     value={formData.nome}
                     onChange={handleChange}
                     required
@@ -175,7 +187,7 @@ function PalestrantesForm() {
                     type="text"
                     id="instituicao"
                     name="instituicao"
-                    placeholder="Ex: IFAL Maceió"
+                    placeholder="Ex: IFAL"
                     value={formData.instituicao}
                     onChange={handleChange}
                     required
@@ -195,42 +207,14 @@ function PalestrantesForm() {
                   />
                 </div>
 
-                <div className="field-group">
-                  <label htmlFor="titulacao">Titulação</label>
-                  <select
-                    id="titulacao"
-                    name="titulacao"
-                    value={formData.titulacao}
-                    onChange={handleChange}
-                  >
-                    <option value="Graduado">Graduado</option>
-                    <option value="Especialista">Especialista</option>
-                    <option value="Mestre">Mestre</option>
-                    <option value="Doutor">Doutor</option>
-                  </select>
-                </div>
-
-                <div className="field-group">
-                  <label htmlFor="status">Status</label>
-                  <select
-                    id="status"
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                  >
-                    <option value="Ativo">Ativo</option>
-                    <option value="Inativo">Inativo</option>
-                  </select>
-                </div>
-
                 <div className="field-group field-full">
-                  <label htmlFor="bio">Mini Biografia</label>
+                  <label htmlFor="mini_biografia">Mini Biografia</label>
                   <textarea
-                    id="bio"
-                    name="bio"
+                    id="mini_biografia"
+                    name="mini_biografia"
                     rows="3"
                     placeholder="Breve resumo da formação e experiência do palestrante..."
-                    value={formData.bio}
+                    value={formData.mini_biografia}
                     onChange={handleChange}
                   />
                 </div>

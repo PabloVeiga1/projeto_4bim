@@ -6,9 +6,8 @@ import {
   IoCloseOutline,
   IoCheckmarkOutline
 } from "react-icons/io5";
-import "../styles/ParticipantesForm.css";
-
-const STORAGE_KEY = "eventos_ifal_usuarios";
+import { apiRequest } from "../services/api";
+import "../styles/UsuariosForm.css";
 
 function UsuariosForm() {
   const navigate = useNavigate();
@@ -20,9 +19,7 @@ function UsuariosForm() {
     email: usuarioEdicao?.email || "",
     senha: "",
     confirmarSenha: "",
-    perfil: usuarioEdicao?.perfil || "Organizador",
-    setor: usuarioEdicao?.setor || "",
-    status: usuarioEdicao?.status || "Ativo",
+    tipo: usuarioEdicao?.tipo || "Organizador",
     termos: Boolean(usuarioEdicao)
   });
 
@@ -39,7 +36,7 @@ function UsuariosForm() {
     if (error) setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!usuarioEdicao && formData.senha.length < 6) {
@@ -58,30 +55,37 @@ function UsuariosForm() {
     }
 
     setIsSubmitting(true);
+    setError("");
 
-    setTimeout(() => {
-      const atuais = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-      const { termos, senha, confirmarSenha, ...dadosUsuario } = formData;
+    try {
+      const payload = {
+        nome: formData.nome,
+        email: formData.email,
+        tipo: formData.tipo,
+        ...(formData.senha ? { senha: formData.senha } : {})
+      };
 
-      let novaLista;
       if (usuarioEdicao) {
-        novaLista = atuais.map((item) =>
-          item.id === usuarioEdicao.id ? { ...item, ...dadosUsuario } : item
-        );
+        await apiRequest(`/usuarios/${usuarioEdicao.id}`, {
+          method: "PUT",
+          body: JSON.stringify(payload)
+        });
       } else {
-        const novoId =
-          atuais.length > 0 ? Math.max(...atuais.map((i) => i.id)) + 1 : 1;
-        novaLista = [...atuais, { id: novoId, ...dadosUsuario }];
+        await apiRequest("/usuarios", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
       }
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(novaLista));
-      setIsSubmitting(false);
       setSuccess(true);
-
       setTimeout(() => {
         navigate("/usuarios");
       }, 800);
-    }, 400);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -104,8 +108,8 @@ function UsuariosForm() {
                 <h2>{usuarioEdicao ? "Editar Usuário" : "Novo Usuário"}</h2>
                 <p>
                   {usuarioEdicao
-                    ? "Atualize as permissões e dados do usuário"
-                    : "Cadastre um usuário com acesso ao painel administrativo"}
+                    ? "Atualize os dados e o perfil de acesso do usuário"
+                    : "Cadastre um usuário no banco de dados do sistema"}
                 </p>
               </div>
             </div>
@@ -146,7 +150,7 @@ function UsuariosForm() {
                     type="text"
                     id="nome"
                     name="nome"
-                    placeholder="Ex: Mariana Soares"
+                    placeholder="Ex: Ana Souza"
                     value={formData.nome}
                     onChange={handleChange}
                     required
@@ -154,12 +158,12 @@ function UsuariosForm() {
                 </div>
 
                 <div className="field-group">
-                  <label htmlFor="email">E-mail institucional *</label>
+                  <label htmlFor="email">E-mail *</label>
                   <input
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="usuario@ifal.edu.br"
+                    placeholder="usuario@evento.com"
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -197,46 +201,20 @@ function UsuariosForm() {
             </div>
 
             <div className="form-section">
-              <h3>Permissões e Vínculo</h3>
+              <h3>Permissão de Acesso</h3>
               <div className="form-grid">
-                <div className="field-group">
-                  <label htmlFor="perfil">Perfil de Acesso *</label>
+                <div className="field-group field-full">
+                  <label htmlFor="tipo">Perfil (Tipo de Usuário) *</label>
                   <select
-                    id="perfil"
-                    name="perfil"
-                    value={formData.perfil}
+                    id="tipo"
+                    name="tipo"
+                    value={formData.tipo}
                     onChange={handleChange}
                   >
                     <option value="Administrador">Administrador</option>
                     <option value="Organizador">Organizador</option>
-                    <option value="Monitor">Monitor</option>
+                    <option value="Participante">Participante</option>
                   </select>
-                </div>
-
-                <div className="field-group">
-                  <label htmlFor="status">Status</label>
-                  <select
-                    id="status"
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                  >
-                    <option value="Ativo">Ativo</option>
-                    <option value="Inativo">Inativo</option>
-                  </select>
-                </div>
-
-                <div className="field-group field-full">
-                  <label htmlFor="setor">Setor / Função no Evento *</label>
-                  <input
-                    type="text"
-                    id="setor"
-                    name="setor"
-                    placeholder="Ex: Coordenação Geral, Credenciamento..."
-                    value={formData.setor}
-                    onChange={handleChange}
-                    required
-                  />
                 </div>
               </div>
             </div>

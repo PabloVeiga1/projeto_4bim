@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   IoMicOutline,
@@ -10,126 +10,83 @@ import {
   IoTrashOutline,
   IoCloseOutline
 } from "react-icons/io5";
-import "../styles/Participantes.css";
-
-const STORAGE_KEY = "eventos_ifal_palestrantes";
-
-const DADOS_INICIAIS = [
-  {
-    id: 1,
-    nome: "Dr. Ricardo Almeida",
-    email: "ricardo.almeida@ifal.edu.br",
-    telefone: "(82) 99911-2233",
-    instituicao: "IFAL Maceió",
-    especialidade: "Inteligência Artificial",
-    titulacao: "Doutor",
-    bio: "Pesquisador em Aprendizado de Máquina e Visão Computacional.",
-    status: "Ativo"
-  },
-  {
-    id: 2,
-    nome: "Profa. Fernanda Costa",
-    email: "fernanda.costa@ufal.br",
-    telefone: "(82) 99822-3344",
-    instituicao: "UFAL",
-    especialidade: "Engenharia de Software",
-    titulacao: "Mestre",
-    bio: "Especialista em Arquitetura de Sistemas e Métodos Ágeis.",
-    status: "Ativo"
-  },
-  {
-    id: 3,
-    nome: "Lucas Mendonça",
-    email: "lucas.mendonca@techalagoas.com.br",
-    telefone: "(82) 99733-4455",
-    instituicao: "Tech Alagoas",
-    especialidade: "Desenvolvimento Web",
-    titulacao: "Especialista",
-    bio: "Tech Lead Full Stack com foco em aplicações escaláveis.",
-    status: "Ativo"
-  },
-  {
-    id: 4,
-    nome: "Dra. Camila Nogueira",
-    email: "camila.nogueira@ifal.edu.br",
-    telefone: "(82) 99644-5566",
-    instituicao: "IFAL Arapiraca",
-    especialidade: "Segurança da Informação",
-    titulacao: "Doutor",
-    bio: "Atua na área de Criptografia e Proteção de Dados (LGPD).",
-    status: "Inativo"
-  }
-];
+import { apiRequest } from "../services/api";
+import "../styles/Palestrantes.css";
 
 export default function Palestrantes() {
-  const [palestrantes, setPalestrantes] = useState(() => {
-    const salvos = localStorage.getItem(STORAGE_KEY);
-    if (salvos) return JSON.parse(salvos);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DADOS_INICIAIS));
-    return DADOS_INICIAIS;
-  });
-
+  const [palestrantes, setPalestrantes] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erroLista, setErroLista] = useState("");
   const [busca, setBusca] = useState("");
-  const [filtroStatus, setFiltroStatus] = useState("Todos");
-  const [filtroTitulacao, setFiltroTitulacao] = useState("Todos");
+  const [filtroInstituicao, setFiltroInstituicao] = useState("Todas");
   const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
 
   const showToast = (msg) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(""), 2500);
+    setTimeout(() => setToastMessage(""), 3000);
   };
 
-  const salvarLista = (novaLista) => {
-    setPalestrantes(novaLista);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(novaLista));
-  };
-
-  const handleExcluir = (id, nome) => {
-    if (window.confirm(`Deseja remover o palestrante ${nome}?`)) {
-      const atualizada = palestrantes.filter((p) => p.id !== id);
-      salvarLista(atualizada);
-      showToast(`${nome} foi removido.`);
+  const carregarPalestrantes = async () => {
+    try {
+      setCarregando(true);
+      setErroLista("");
+      const dados = await apiRequest("/palestrantes");
+      setPalestrantes(dados);
+    } catch (err) {
+      setErroLista(err.message);
+    } finally {
+      setCarregando(false);
     }
   };
 
-  const handleToggleStatus = (id) => {
-    const atualizada = palestrantes.map((p) => {
-      if (p.id === id) {
-        const novo = p.status === "Ativo" ? "Inativo" : "Ativo";
-        showToast(`Status alterado para ${novo}.`);
-        return { ...p, status: novo };
-      }
-      return p;
-    });
-    salvarLista(atualizada);
+  useEffect(() => {
+    carregarPalestrantes();
+  }, []);
+
+  const handleExcluir = async (id, nome) => {
+    if (!window.confirm(`Deseja remover o palestrante ${nome}?`)) return;
+
+    try {
+      await apiRequest(`/palestrantes/${id}`, { method: "DELETE" });
+      setPalestrantes((prev) => prev.filter((p) => p.id !== id));
+      showToast(`${nome} foi removido do banco de dados.`);
+    } catch (err) {
+      alert(err.message);
+    }
   };
+
+  const instituicoesUnicas = useMemo(() => {
+    const lista = palestrantes
+      .map((p) => p.instituicao)
+      .filter(Boolean);
+    return [...new Set(lista)];
+  }, [palestrantes]);
 
   const palestrantesFiltrados = useMemo(() => {
     return palestrantes.filter((p) => {
       const termo = busca.toLowerCase();
       const matchBusca =
-        p.nome.toLowerCase().includes(termo) ||
-        p.email.toLowerCase().includes(termo) ||
-        p.instituicao.toLowerCase().includes(termo) ||
-        p.especialidade.toLowerCase().includes(termo);
+        (p.nome || "").toLowerCase().includes(termo) ||
+        (p.email || "").toLowerCase().includes(termo) ||
+        (p.instituicao || "").toLowerCase().includes(termo) ||
+        (p.especialidade || "").toLowerCase().includes(termo);
 
-      const matchStatus = filtroStatus === "Todos" || p.status === filtroStatus;
-      const matchTitulacao =
-        filtroTitulacao === "Todos" || p.titulacao === filtroTitulacao;
+      const matchInstituicao =
+        filtroInstituicao === "Todas" || p.instituicao === filtroInstituicao;
 
-      return matchBusca && matchStatus && matchTitulacao;
+      return matchBusca && matchInstituicao;
     });
-  }, [palestrantes, busca, filtroStatus, filtroTitulacao]);
+  }, [palestrantes, busca, filtroInstituicao]);
 
   const total = palestrantes.length;
-  const totalAtivos = palestrantes.filter((p) => p.status === "Ativo").length;
-  const totalMestresDoutores = palestrantes.filter(
-    (p) => p.titulacao === "Mestre" || p.titulacao === "Doutor"
+  const totalIfal = palestrantes.filter((p) =>
+    (p.instituicao || "").toUpperCase().includes("IFAL")
   ).length;
-  const totalExternos = palestrantes.filter(
-    (p) => !p.instituicao.toUpperCase().includes("IFAL")
-  ).length;
+  const totalExternos = total - totalIfal;
+  const totalAreas = new Set(
+    palestrantes.map((p) => p.especialidade).filter(Boolean)
+  ).size;
 
   return (
     <div className="palestrantes-page">
@@ -173,20 +130,20 @@ export default function Palestrantes() {
 
         <div className="stats-row">
           <div className="stat-box">
-            <span className="stat-title">Total</span>
+            <span className="stat-title">Total Cadastrados</span>
             <span className="stat-number">{total}</span>
           </div>
           <div className="stat-box">
-            <span className="stat-title">Ativos</span>
-            <span className="stat-number stat-green">{totalAtivos}</span>
-          </div>
-          <div className="stat-box">
-            <span className="stat-title">Mestres / Doutores</span>
-            <span className="stat-number">{totalMestresDoutores}</span>
+            <span className="stat-title">Docentes IFAL</span>
+            <span className="stat-number stat-green">{totalIfal}</span>
           </div>
           <div className="stat-box">
             <span className="stat-title">Convidados Externos</span>
             <span className="stat-number">{totalExternos}</span>
+          </div>
+          <div className="stat-box">
+            <span className="stat-title">Áreas de Especialidade</span>
+            <span className="stat-number">{totalAreas}</span>
           </div>
         </div>
 
@@ -213,28 +170,25 @@ export default function Palestrantes() {
 
           <div className="selects-row">
             <select
-              value={filtroStatus}
-              onChange={(e) => setFiltroStatus(e.target.value)}
+              value={filtroInstituicao}
+              onChange={(e) => setFiltroInstituicao(e.target.value)}
               className="select-filter"
             >
-              <option value="Todos">Status: Todos</option>
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
-            </select>
-
-            <select
-              value={filtroTitulacao}
-              onChange={(e) => setFiltroTitulacao(e.target.value)}
-              className="select-filter"
-            >
-              <option value="Todos">Titulação: Todas</option>
-              <option value="Graduado">Graduado</option>
-              <option value="Especialista">Especialista</option>
-              <option value="Mestre">Mestre</option>
-              <option value="Doutor">Doutor</option>
+              <option value="Todas">Instituição: Todas</option>
+              {instituicoesUnicas.map((inst) => (
+                <option key={inst} value={inst}>
+                  {inst}
+                </option>
+              ))}
             </select>
           </div>
         </div>
+
+        {erroLista && (
+          <div className="alert-error-box">
+            <span>{erroLista}</span>
+          </div>
+        )}
 
         <div className="table-wrapper">
           <table className="solid-table">
@@ -242,37 +196,39 @@ export default function Palestrantes() {
               <tr>
                 <th>ID</th>
                 <th>Palestrante</th>
-                <th>E-mail</th>
-                <th>Instituição / Área</th>
-                <th>Titulação</th>
-                <th>Status</th>
+                <th>Contato</th>
+                <th>Instituição</th>
+                <th>Especialidade</th>
+                <th>Mini Biografia</th>
                 <th className="th-actions">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {palestrantesFiltrados.length > 0 ? (
+              {carregando ? (
+                <tr>
+                  <td colSpan="7" className="empty-message">
+                    Carregando palestrantes do banco de dados...
+                  </td>
+                </tr>
+              ) : palestrantesFiltrados.length > 0 ? (
                 palestrantesFiltrados.map((p) => (
                   <tr key={p.id}>
                     <td className="cell-id">#{p.id}</td>
                     <td className="cell-name">{p.nome}</td>
-                    <td className="cell-email">{p.email}</td>
-                    <td className="cell-sub">
-                      {p.instituicao} • {p.especialidade}
+                    <td className="cell-email">
+                      <div>{p.email}</div>
+                      {p.telefone && <small>{p.telefone}</small>}
                     </td>
+                    <td className="cell-sub">{p.instituicao}</td>
                     <td>
-                      <span className="pill-nivel">{p.titulacao}</span>
+                      <span className="pill-nivel">{p.especialidade}</span>
                     </td>
-                    <td>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleStatus(p.id)}
-                        className={`pill-status ${
-                          p.status === "Ativo" ? "status-ativo" : "status-inativo"
-                        }`}
-                        title="Alternar status"
-                      >
-                        {p.status}
-                      </button>
+                    <td className="cell-sub" title={p.mini_biografia || ""}>
+                      {p.mini_biografia
+                        ? p.mini_biografia.length > 45
+                          ? `${p.mini_biografia.slice(0, 45)}...`
+                          : p.mini_biografia
+                        : "—"}
                     </td>
                     <td className="cell-actions">
                       <Link

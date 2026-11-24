@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   IoShieldCheckmarkOutline,
@@ -10,112 +10,75 @@ import {
   IoTrashOutline,
   IoCloseOutline
 } from "react-icons/io5";
-import "../styles/Participantes.css";
+import { apiRequest } from "../services/api";
+import "../styles/Usuarios.css";
 
-const STORAGE_KEY = "eventos_ifal_usuarios";
-
-const DADOS_INICIAIS = [
-  {
-    id: 1,
-    nome: "Pablo Vinícius",
-    email: "pvcv1@aluno.ifal.edu.br",
-    perfil: "Administrador",
-    setor: "Coordenação Geral",
-    status: "Ativo"
-  },
-  {
-    id: 2,
-    nome: "Mariana Soares",
-    email: "mariana.soares@ifal.edu.br",
-    perfil: "Organizador",
-    setor: "Comissão de Programação",
-    status: "Ativo"
-  },
-  {
-    id: 3,
-    nome: "Rafael Torres",
-    email: "rafael.torres@aluno.ifal.edu.br",
-    perfil: "Monitor",
-    setor: "Credenciamento e Presença",
-    status: "Ativo"
-  },
-  {
-    id: 4,
-    nome: "Beatriz Lima",
-    email: "beatriz.lima@aluno.ifal.edu.br",
-    perfil: "Monitor",
-    setor: "Apoio de Salas",
-    status: "Inativo"
-  }
-];
+function formatarData(dataIso) {
+  if (!dataIso) return "—";
+  return new Date(dataIso).toLocaleDateString("pt-BR");
+}
 
 export default function Usuarios() {
-  const [usuarios, setUsuarios] = useState(() => {
-    const salvos = localStorage.getItem(STORAGE_KEY);
-    if (salvos) return JSON.parse(salvos);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(DADOS_INICIAIS));
-    return DADOS_INICIAIS;
-  });
-
+  const [usuarios, setUsuarios] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erroLista, setErroLista] = useState("");
   const [busca, setBusca] = useState("");
-  const [filtroStatus, setFiltroStatus] = useState("Todos");
-  const [filtroPerfil, setFiltroPerfil] = useState("Todos");
+  const [filtroTipo, setFiltroTipo] = useState("Todos");
   const [toastMessage, setToastMessage] = useState("");
   const navigate = useNavigate();
 
   const showToast = (msg) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(""), 2500);
+    setTimeout(() => setToastMessage(""), 3000);
   };
 
-  const salvarLista = (novaLista) => {
-    setUsuarios(novaLista);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(novaLista));
-  };
-
-  const handleExcluir = (id, nome) => {
-    if (window.confirm(`Deseja remover o usuário ${nome}?`)) {
-      const atualizada = usuarios.filter((u) => u.id !== id);
-      salvarLista(atualizada);
-      showToast(`Usuário ${nome} removido.`);
+  const carregarUsuarios = async () => {
+    try {
+      setCarregando(true);
+      setErroLista("");
+      const dados = await apiRequest("/usuarios");
+      setUsuarios(dados);
+    } catch (err) {
+      setErroLista(err.message);
+    } finally {
+      setCarregando(false);
     }
   };
 
-  const handleToggleStatus = (id) => {
-    const atualizada = usuarios.map((u) => {
-      if (u.id === id) {
-        const novo = u.status === "Ativo" ? "Inativo" : "Ativo";
-        showToast(`Status alterado para ${novo}.`);
-        return { ...u, status: novo };
-      }
-      return u;
-    });
-    salvarLista(atualizada);
+  useEffect(() => {
+    carregarUsuarios();
+  }, []);
+
+  const handleExcluir = async (id, nome) => {
+    if (!window.confirm(`Deseja remover o usuário ${nome}?`)) return;
+
+    try {
+      await apiRequest(`/usuarios/${id}`, { method: "DELETE" });
+      setUsuarios((prev) => prev.filter((u) => u.id !== id));
+      showToast(`Usuário ${nome} removido com sucesso.`);
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
   const usuariosFiltrados = useMemo(() => {
     return usuarios.filter((u) => {
       const termo = busca.toLowerCase();
       const matchBusca =
-        u.nome.toLowerCase().includes(termo) ||
-        u.email.toLowerCase().includes(termo) ||
-        u.setor.toLowerCase().includes(termo);
+        (u.nome || "").toLowerCase().includes(termo) ||
+        (u.email || "").toLowerCase().includes(termo) ||
+        (u.tipo || "").toLowerCase().includes(termo);
 
-      const matchStatus = filtroStatus === "Todos" || u.status === filtroStatus;
-      const matchPerfil = filtroPerfil === "Todos" || u.perfil === filtroPerfil;
+      const matchTipo = filtroTipo === "Todos" || u.tipo === filtroTipo;
 
-      return matchBusca && matchStatus && matchPerfil;
+      return matchBusca && matchTipo;
     });
-  }, [usuarios, busca, filtroStatus, filtroPerfil]);
+  }, [usuarios, busca, filtroTipo]);
 
   const total = usuarios.length;
-  const totalAtivos = usuarios.filter((u) => u.status === "Ativo").length;
-  const totalAdmins = usuarios.filter(
-    (u) => u.perfil === "Administrador"
-  ).length;
-  const totalEquipe = usuarios.filter(
-    (u) => u.perfil === "Organizador" || u.perfil === "Monitor"
-  ).length;
+  const totalAdmins = usuarios.filter((u) => u.tipo === "Administrador").length;
+  const totalOrganizadores = usuarios.filter((u) => u.tipo === "Organizador").length;
+  const totalParticipantes = usuarios.filter((u) => u.tipo === "Participante").length;
 
   return (
     <div className="usuarios-page">
@@ -149,7 +112,7 @@ export default function Usuarios() {
         <div className="content-header">
           <div>
             <h1>Usuários do Sistema</h1>
-            <p>Controle de acesso, administradores, organizadores e monitores</p>
+            <p>Controle de contas e perfis de acesso cadastrados no banco</p>
           </div>
           <Link to="/usuariosform" className="btn-primary-action">
             <IoAddOutline className="btn-icon" />
@@ -159,20 +122,20 @@ export default function Usuarios() {
 
         <div className="stats-row">
           <div className="stat-box">
-            <span className="stat-title">Total</span>
+            <span className="stat-title">Total de Contas</span>
             <span className="stat-number">{total}</span>
           </div>
           <div className="stat-box">
-            <span className="stat-title">Ativos</span>
-            <span className="stat-number stat-green">{totalAtivos}</span>
-          </div>
-          <div className="stat-box">
             <span className="stat-title">Administradores</span>
-            <span className="stat-number">{totalAdmins}</span>
+            <span className="stat-number stat-green">{totalAdmins}</span>
           </div>
           <div className="stat-box">
-            <span className="stat-title">Organizadores / Monitores</span>
-            <span className="stat-number">{totalEquipe}</span>
+            <span className="stat-title">Organizadores</span>
+            <span className="stat-number">{totalOrganizadores}</span>
+          </div>
+          <div className="stat-box">
+            <span className="stat-title">Participantes</span>
+            <span className="stat-number">{totalParticipantes}</span>
           </div>
         </div>
 
@@ -181,7 +144,7 @@ export default function Usuarios() {
             <IoSearchOutline className="search-icon" />
             <input
               type="text"
-              placeholder="Pesquisar por nome, e-mail ou setor..."
+              placeholder="Pesquisar por nome, e-mail ou perfil..."
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
               className="input-search"
@@ -199,27 +162,23 @@ export default function Usuarios() {
 
           <div className="selects-row">
             <select
-              value={filtroStatus}
-              onChange={(e) => setFiltroStatus(e.target.value)}
-              className="select-filter"
-            >
-              <option value="Todos">Status: Todos</option>
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
-            </select>
-
-            <select
-              value={filtroPerfil}
-              onChange={(e) => setFiltroPerfil(e.target.value)}
+              value={filtroTipo}
+              onChange={(e) => setFiltroTipo(e.target.value)}
               className="select-filter"
             >
               <option value="Todos">Perfil: Todos</option>
               <option value="Administrador">Administrador</option>
               <option value="Organizador">Organizador</option>
-              <option value="Monitor">Monitor</option>
+              <option value="Participante">Participante</option>
             </select>
           </div>
         </div>
+
+        {erroLista && (
+          <div className="alert-error-box">
+            <span>{erroLista}</span>
+          </div>
+        )}
 
         <div className="table-wrapper">
           <table className="solid-table">
@@ -228,35 +187,28 @@ export default function Usuarios() {
                 <th>ID</th>
                 <th>Nome</th>
                 <th>E-mail</th>
-                <th>Setor / Função</th>
-                <th>Perfil</th>
-                <th>Status</th>
+                <th>Perfil (Tipo)</th>
+                <th>Criado em</th>
                 <th className="th-actions">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {usuariosFiltrados.length > 0 ? (
+              {carregando ? (
+                <tr>
+                  <td colSpan="6" className="empty-message">
+                    Carregando usuários do banco de dados...
+                  </td>
+                </tr>
+              ) : usuariosFiltrados.length > 0 ? (
                 usuariosFiltrados.map((u) => (
                   <tr key={u.id}>
                     <td className="cell-id">#{u.id}</td>
                     <td className="cell-name">{u.nome}</td>
                     <td className="cell-email">{u.email}</td>
-                    <td className="cell-sub">{u.setor}</td>
                     <td>
-                      <span className="pill-nivel">{u.perfil}</span>
+                      <span className="pill-nivel">{u.tipo}</span>
                     </td>
-                    <td>
-                      <button
-                        type="button"
-                        onClick={() => handleToggleStatus(u.id)}
-                        className={`pill-status ${
-                          u.status === "Ativo" ? "status-ativo" : "status-inativo"
-                        }`}
-                        title="Alternar status"
-                      >
-                        {u.status}
-                      </button>
-                    </td>
+                    <td className="cell-sub">{formatarData(u.criado_em)}</td>
                     <td className="cell-actions">
                       <Link
                         to="/usuariosform"
@@ -279,7 +231,7 @@ export default function Usuarios() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="empty-message">
+                  <td colSpan="6" className="empty-message">
                     Nenhum usuário encontrado para os critérios selecionados.
                   </td>
                 </tr>
