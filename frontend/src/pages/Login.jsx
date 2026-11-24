@@ -11,8 +11,6 @@ import {
 
 {/*Importacao do cliente da API para evitar buscas grandes*/}
 
-import api from "../services/api";
-
 import "../styles/Login.css";
 
 export default function Login() {
@@ -33,13 +31,17 @@ export default function Login() {
 
     try {
       sessionStorage.removeItem("modo_visitante");
-      await api("/auth/login", {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email,
           senha: password
         })
       });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.message || "Erro ao fazer login.");
       navigate("/dashboard");
     } catch (error) {
       setError(error.message);

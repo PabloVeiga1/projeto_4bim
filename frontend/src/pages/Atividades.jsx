@@ -15,7 +15,6 @@ import {
     IoTimeOutline,
 } from "react-icons/io5";
 
-import api from "../services/api";
 import "../styles/Dashboard.css";
 import "../styles/Atividades.css";
 
@@ -32,45 +31,31 @@ function Atividades() {
     const estaEmMinhas = location.pathname === "/minhas-atividades";
     const estaNoInicio = !estaEmDisponiveis && !estaEmMinhas;
 
-    useEffect(() => {
-        api("/auth/me")
-            .then((res) => {
-                if (res?.usuario) setUsuario(res.usuario);
-            })
-            .catch((err) => console.error("Erro ao carregar usuário:", err));
-    }, []);
+  useEffect(() => {
+    fetch("http://localhost:3000/api/auth/me", {
+      credentials: "include"
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok && data?.usuario) setUsuario(data.usuario);
+      })
+      .catch((err) => console.error("Erro ao carregar usuário:", err));
+  }, []);
 
-    useEffect(() => {
-        if (!estaEmDisponiveis) return;
-
-        const carregarAtividades = async () => {
-            try {
-                setCarregando(true);
-                setErro("");
-
-                const dados = await api("/atividades");
-                setAtividades(dados);
-            } catch (err) {
-                console.error("Erro ao carregar atividades:", err);
-                setErro("Não foi possível carregar as atividades.");
-            } finally {
-                setCarregando(false);
-            }
-        };
-
-        carregarAtividades();
-    }, [estaEmDisponiveis]);
-
-    const handleLogout = async () => {
-        try {
-            sessionStorage.removeItem("modo_visitante");
-            await api("/auth/logout", { method: "POST" });
-        } catch (err) {
-            console.error("Erro ao sair:", err);
-        } finally {
-            navigate("/login");
-        }
-    };
+  const handleLogout = async () => {
+    try {
+      sessionStorage.removeItem("modo_visitante");
+      await fetch("http://localhost:3000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" }
+      });
+    } catch (err) {
+      console.error("Erro ao sair:", err);
+    } finally {
+      navigate("/login");
+    }
+  };
 
     let tituloPagina = "Gerenciamento de Atividades";
     let descricaoPagina = "Cadastre e organize as atividades acadêmicas.";

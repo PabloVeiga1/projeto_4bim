@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import api from "../services/api";
 import "../styles/Participantes.css";
 
 export default function Participantes() {
@@ -18,7 +17,11 @@ export default function Participantes() {
     setCarregando(true);
     setErro("");
     try {
-      const lista = await api("/participantes");
+      const response = await fetch("http://localhost:3000/api/participantes", {
+        credentials: "include"
+      });
+      const lista = await response.json();
+      if (!response.ok) throw new Error(lista.message || "Erro ao carregar participantes.");
       setParticipantes(lista);
     } catch (error) {
       setErro(error.message);
@@ -30,8 +33,12 @@ export default function Participantes() {
   useEffect(() => {
     let ativo = true;
 
-    api("/participantes")
-      .then((lista) => {
+    fetch("http://localhost:3000/api/participantes", {
+      credentials: "include"
+    })
+      .then(async (response) => {
+        const lista = await response.json();
+        if (!response.ok) throw new Error(lista.message || "Erro ao carregar participantes.");
         if (ativo) setParticipantes(lista);
       })
       .catch((error) => {
@@ -49,7 +56,11 @@ export default function Participantes() {
   const handleLogout = async () => {
     try {
       sessionStorage.removeItem("modo_visitante");
-      await api("/auth/logout", { method: "POST" });
+      await fetch("http://localhost:3000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" }
+      });
     } catch (err) {
       console.error("Erro ao sair:", err);
     } finally {
@@ -65,7 +76,13 @@ export default function Participantes() {
   const handleExcluir = async (id, nome) => {
     if (window.confirm(`Deseja remover o participante ${nome}?`)) {
       try {
-        await api(`/participantes/${id}`, { method: "DELETE" });
+        const response = await fetch(`http://localhost:3000/api/participantes/${id}`, {
+          method: "DELETE",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || "Erro ao excluir participante.");
         setParticipantes((atual) => atual.filter((p) => p.id !== id));
         showToast(`Participante ${nome} foi removido.`);
       } catch (error) {

@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { IoPersonOutline, IoMailOutline, IoLockClosedOutline } from "react-icons/io5";
 
-import api from "../services/api";
-
 import "../styles/Login.css";
 
 function Register() {
@@ -33,16 +31,20 @@ function Register() {
     setLoading(true);
 
     try {
-      const resposta = await api("/auth/register", {
+      const response = await fetch("http://localhost:3000/api/auth/register", {
         method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome,
           email,
           senha
         })
       });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.message || "Erro ao cadastrar.");
 
-      setSuccess(resposta.message);
+      setSuccess(data.message);
 
       setTimeout(() => {
         navigate("/login");

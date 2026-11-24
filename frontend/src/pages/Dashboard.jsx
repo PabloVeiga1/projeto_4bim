@@ -14,7 +14,6 @@ import {
   IoArrowForwardOutline
 } from "react-icons/io5";
 
-import api from "../services/api";
 import "../styles/Dashboard.css";
 
 function Dashboard() {
@@ -22,10 +21,13 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    api("/auth/me")
-      .then((res) => {
-        if (res?.usuario) {
-          setUsuario(res.usuario);
+    fetch("http://localhost:3000/api/auth/me", {
+      credentials: "include"
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok && data?.usuario) {
+          setUsuario(data.usuario);
         }
       })
       .catch((err) => {
@@ -36,7 +38,11 @@ function Dashboard() {
   const handleLogout = async () => {
     try {
       sessionStorage.removeItem("modo_visitante");
-      await api("/auth/logout", { method: "POST" });
+      await fetch("http://localhost:3000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" }
+      });
     } catch (err) {
       console.error("Erro ao sair:", err);
     } finally {

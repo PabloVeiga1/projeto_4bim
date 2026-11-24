@@ -4,7 +4,6 @@ import {
   IoArrowBackOutline,
   IoCheckmarkOutline
 } from "react-icons/io5";
-import api from "../services/api";
 import "../styles/ParticipantesForm.css";
 
 function ParticipanteForm() {
@@ -56,15 +55,19 @@ function ParticipanteForm() {
     };
 
     try {
-      await api(
+      const response = await fetch(
         participanteEdicao
-          ? `/participantes/${participanteEdicao.id}`
-          : "/participantes",
+          ? `http://localhost:3000/api/participantes/${participanteEdicao.id}`
+          : "http://localhost:3000/api/participantes",
         {
           method: participanteEdicao ? "PUT" : "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
         }
       );
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.message || "Erro ao salvar participante.");
       setSuccess(true);
       setTimeout(() => {
         navigate("/participantes");

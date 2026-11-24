@@ -14,8 +14,6 @@ import PalestrantesForm from "./pages/PalestrantesForm";
 import Usuarios from "./pages/Usuarios";
 import UsuariosForm from "./pages/UsuariosForm";
 
-import api from "./services/api";
-
 // Componente simples para proteger rotas privadas sem Context API
 function RotaPrivada({ children }) {
   const [autenticado, setAutenticado] = useState(null);
@@ -23,8 +21,13 @@ function RotaPrivada({ children }) {
   useEffect(() => {
     const isVisitante = sessionStorage.getItem("modo_visitante") === "true";
 
-    api("/auth/me")
-      .then(() => setAutenticado(true))
+    fetch("http://localhost:3000/api/auth/me", {
+      credentials: "include"
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Não autenticado");
+        setAutenticado(true);
+      })
       .catch(() => {
         // Se entrou pelo botão "Acessar sem login", permite a visualização como visitante
         if (isVisitante) {
