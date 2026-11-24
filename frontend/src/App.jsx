@@ -6,7 +6,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Participantes from "./pages/Participantes";
 import ParticipantesForm from "./pages/ParticipantesForm";
-import Inscricoes from "./pages/Inscricoes";
 import Atividades from "./pages/Atividades";
 
 import Palestrantes from "./pages/Palestrantes";
@@ -79,14 +78,6 @@ const router = createBrowserRouter([
     element: (
       <RotaPrivada>
         <ParticipantesForm />
-      </RotaPrivada>
-    )
-  },
-  {
-    path: "/inscricoes",
-    element: (
-      <RotaPrivada>
-        <Inscricoes />
       </RotaPrivada>
     )
   },
