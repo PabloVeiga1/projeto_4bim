@@ -8,10 +8,14 @@ import Participantes from "./pages/Participantes";
 import ParticipantesForm from "./pages/ParticipantesForm";
 import Atividades from "./pages/Atividades";
 
+import EventosForm from "./pages/EventosForm";
+import Eventos from "./pages/Eventos";
 import Palestrantes from "./pages/Palestrantes";
 import PalestrantesForm from "./pages/PalestrantesForm";
 import Usuarios from "./pages/Usuarios";
 import UsuariosForm from "./pages/UsuariosForm";
+
+import AtividadesForm from "./pages/AtividadesForm";
 
 // Componente simples para proteger rotas privadas sem Context API
 function RotaPrivada({ children }) {
@@ -62,6 +66,22 @@ const router = createBrowserRouter([
     element: (
       <RotaPrivada>
         <Dashboard />
+      </RotaPrivada>
+    )
+  },
+  {
+    path: "/eventos",
+    element: (
+      <RotaPrivada>
+        <Eventos />
+      </RotaPrivada>
+    )
+  },
+  {
+    path: "/eventosform",
+    element: (
+      <RotaPrivada>
+        <EventosForm />
       </RotaPrivada>
     )
   },
@@ -126,6 +146,14 @@ const router = createBrowserRouter([
   element: (
     <RotaPrivada>
       <Atividades />
+    </RotaPrivada>
+  )
+},
+{
+  path: "/atividades/cadastrar",
+  element: (
+    <RotaPrivada>
+      <AtividadesForm />
     </RotaPrivada>
   )
 },

@@ -62,7 +62,7 @@ function responderErro(res, error, operacao) {
   return res.status(500).json({ message: `Erro ao ${operacao} participante.` });
 }
 
-class ParticipanteController {
+export default class ParticipanteController {
   static async listar(req, res) {
     try {
       return res.json(await Participante.listarParticipantes());
@@ -132,4 +132,3 @@ class ParticipanteController {
   }
 }
 
-export default ParticipanteController;

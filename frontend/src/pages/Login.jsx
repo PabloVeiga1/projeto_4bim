@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-{/*Importacao dos icones*/}
 import {
   IoMailOutline,
   IoLockClosedOutline,
   IoEyeOutline,
   IoEyeOffOutline,
 } from "react-icons/io5";
-
-{/*Importacao do cliente da API para evitar buscas grandes*/}
 
 import "../styles/Login.css";
 
@@ -22,8 +19,7 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  {/*Função para lidar com o envio do formulário de login*/}
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
