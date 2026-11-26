@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
+import RecuperarSenha from "./pages/RecuperarSenha";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -164,7 +165,13 @@ const router = createBrowserRouter([
       <Atividades />
     </RotaPrivada>
   )
-}
+},
+{
+    path: "/recuperar-senha",
+    element: (
+        <RecuperarSenha />
+    )
+  },
 ]);
 
 export default router;

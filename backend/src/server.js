@@ -8,6 +8,8 @@ import AtividadeRoutes from "./routes/AtividadeRoutes.js";
 import PalestranteRoutes from "./routes/PalestranteRoutes.js";
 import UsuarioRoutes from "./routes/UsuarioRoutes.js";
 import dotenv from "dotenv";
+import RecuperarRoutes from "./routes/RecuperarRoutes.js";
+
 dotenv.config();
 
 const app = express();
@@ -32,6 +34,7 @@ app.use("/api/eventos", EventoRoutes);
 app.use("/api/atividades", AtividadeRoutes);
 app.use("/api/palestrantes", PalestranteRoutes);
 app.use("/api/usuarios", UsuarioRoutes);
+app.use("/api/recuperar-senha", RecuperarRoutes);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log(`Servidor rodando em http://localhost:${process.env.PORT || 3000}`);
